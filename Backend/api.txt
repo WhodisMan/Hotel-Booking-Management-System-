@@ -1,0 +1,60 @@
+**logging in and generating a token
+curl -X POST -H "Content-Type:application/json" -d '{"username":"test","password":"password"}' http://3.104.1.190:8080/login
+curl -X POST -H "Content-Type:application/json" -d "{\"username\":\"test\",\"password\":\"password\"}" http://3.104.1.190:8080/login
+
+**getting restricted content
+curl -X GET -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcwODUxMTg1NCwianRpIjoiMmM1ZTVhYzAtYjA2NC00YzIxLTg4MTgtYzc3ODViNDQ0YjAxIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6InRlc3QiLCJuYmYiOjE3MDg1MTE4NTQsImNzcmYiOiI0ZjRlYmE2Yy1kNGRjLTRkNTItODU4MS0xZjU1NzFjZTNjOTkiLCJleHAiOjE3MDg1MTI3NTR9.ma1IgK226CqbrOZUG5dP3En_2QxI7dA0aPqhlDqM26U" http://localhost:5000/protected
+curl -X GET -H "Authorization: Bearer {TOKEN}" http://3.104.1.190:8080/protected
+─$ curl -X GET http://3.104.1.190:8080/protected
+
+{"MSG":"NOPPE"}
+                    
+**add new user:
+curl -X POST -H "Content-Type: application/json" -d '{"username":"test", "password":"password", "name":"styl", "email":"test@mail.com", "addr":"some address"}' http://localhost:8080/signup/user
+html demo present
+
+
+**fetch hotels in a city:
+curl -X POST -H "Content-Type: application/json" -d "{\"city\":\"Delhi\"}" http://localhost:8080/city
+
+**fetch available rooms in a hotel Along with reviews:
+curl -X POST -H "Content-Type: application/json" -d "{\"hotel_id\":\"16560\"}" http://localhost:8080/hotel
+{"info":[["1",34],["2",34],["3",20],["4",7]],"reviews":[[1,16560,1,4,"GOOd"]]}
+
+
+**booking a room
+curl -X POST -H "Authorization: Bearer {TOKEN}" -H "Content-Type: application/json" -d '{"pid":"16560","uid":"1","r_cat":"3","checkin":"2024/06/04","checkout":"2024/06/06","g_count":"4","amount":5400}' http://localhost:5000/book
+curl.exe -X POST -H "Authorization: Bearer {TOKEN}" -H "Content-Type: application/json" -d "{\"pid\":\"16560\",\"uid\":\"1\",\"r_cat\":\"3\",\"checkin\":\"2024/06/04\",\"checkout\":\"2024/06/06\",\"g_count\":\"4\",\"amount\":5400}" http://3.104.1.190:8080/book
+**to check:
+select * from RECORDS;
+SELECT * FROM BOOKING_STAT WHERE PROPERTY_ID=16560;
+
+
+**cancel a booking uid bid(record id)
+curl.exe -X POST -H "Authorization: Bearer {TOKEN}" -H "Content-Type: application/json" -d "{\"bid\":\"5\"}" http://localhost:8080/cancellation
+**to check:
+select * from RECORDS;
+SELECT * FROM BOOKING_STAT WHERE PROPERTY_ID=16560;
+
+**create a manager for a property
+curl -X POST -H "Content-Type: application/json" -d "{\"username\":\"mngr\", \"password\":\"password\", \"pid\":16560, \"email\":\"mngr@mail.com\"}" http://localhost:8080/signup/mngr
+
+**manager login
+curl -X POST -H "Content-Type:application/json" -d "{\"username\":\"mngr1\",\"password\":\"password\"}" http://localhost:8080/login/mngr
+
+***updating the no of rooms available
+curl.exe -X POST -H "Authorization: Bearer {TOKEN}" -H "Content-Type: application/json" -d "{\"pid\":\"16560\",\"cat\":\"1\",\"num\":\"24\"}" http://localhost:8080/mngr/roomUpdate
+
+***update the price of certain room catagory
+curl.exe -X POST -H "Authorization: Bearer {TOKEN}" -H "Content-Type: application/json" -d "{\"pid\":\"16560\",\"cat\":\"1\",\"price\":\"2400\"}" http://localhost:8080/mngr/priceUpdate
+
+
+***fetch records for manager
+curl.exe -X POST -H "Authorization: Bearer {TOKEN}" -H "Content-Type: application/json" -d "{\"pid\":16560}" http://localhost:8080/mngr/fetchRec
+
+
+***get prediction from available
+
+curl.exe -X POST -H "Authorization: Bearer {TOKEsN}" -H "Content-Type: application/json" -d "{\"rid\":\"5\",\"pid\":16560}" http://localhost:8080/predict
+
+eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxNDkyNTgzMSwianRpIjoiZTZjMWNlOTQtYzMyMi00ZTQxLThiYWMtNGE0NWQ1N2EwYThjIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTY1NjAsIm5iZiI6MTcxNDkyNTgzMSwiY3NyZiI6IjBkYWU0MzA3LTc3OGUtNDBiZS1iNDdiLTMxYTYyYzBmNDQzMiIsImV4cCI6MTcxNDkyNjczMX0.wXLa5ALii9OZs4sMw7p_FAoNYHZrY0hIKYTPiSex4Uk
