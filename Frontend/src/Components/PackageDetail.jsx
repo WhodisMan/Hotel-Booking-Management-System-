@@ -26,7 +26,6 @@ const PackageDetail = () => {
             img={detail.image}
             title={detail.title}
             desc={detail.desc}
-            button={detail.button}
           />
         ))}
       </div>

@@ -17,42 +17,41 @@ export const HotelDetail =[
         image: image1,
         title: 'Atliq Grands',
         desc: 'Escape to our luxurious resort and spa, nestled in the heart of breathtaking natural surroundings. Indulge in world-class amenities, rejuvenating spa treatments, and exquisite dining experiences. Experience the ultimate in relaxation and serenity at our resort.',
-        button: 'Book Now'
+
       },
       {
         id: 2,
         image: image2,
         title: 'Atliq Exotica',
         desc: 'Discover the charm of our seaside boutique hotel, located steps away from pristine sandy beaches. Immerse yourself in the tranquil coastal ambiance and enjoy breathtaking ocean views from our stylishly designed rooms. Experience coastal living at its finest.',
-        button: 'Book Now'
+
       },
       {
         id: 3,
         image: image3,
         title: 'Atliq City',
         desc: 'Unwind in our cozy mountain retreat lodge, surrounded by stunning peaks and lush forests. Experience the beauty of nature with hiking trails, mountain biking, and winter sports activities. Relax by the fireplace in our rustic yet elegant accommodations.',
-        button: 'Book Now'
       },
       {
         id: 4,
         image: image4,
         title: 'Atliq Blu',
         desc: 'Immerse yourself in the vibrant city life at our urban chic boutique hotel. Located in the heart of the bustling metropolis, our hotel offers stylish rooms, modern amenities, and easy access to shopping, dining, and entertainment venues. Experience the urban charm and sophistication.',
-        button: 'Book Now'
+
       },
       {
         id: 5,
         image: image5,
         title: 'Atliq Bay',
         desc: 'Step back in time at our historic inn and spa, where classic elegance meets modern comfort. Explore the rich history of the area and relax in our luxurious spa facilities. Indulge in gourmet dining and experience the timeless charm of our meticulously restored accommodations.',
-        button: 'Book Now'
+
       },
       {
         id: 6,
         image: image6,
         title: 'Atliq Palace',
         desc: 'Escape to our tropical paradise resort, located on a pristine island with white sandy beaches and crystal-clear turquoise waters. Immerse yourself in the tropical oasis with palm trees, exotic wildlife, and a range of water activities. Experience paradise like never before.',
-        button: 'Book Now'
+
       },
 ]
 
