@@ -25,10 +25,7 @@ const Header = () => {
           </Link>
         </div>
         <div className="hidden md:block">
-          <button className="px-4 p-3 uppercase font-normal">
-            <DiamondIcon/>
-            <span className="p-1">Reservation</span>
-          </button>
+
           <button className="px-4 p-3 bg-[#d27548] uppercase text-white font-normal rounded">
             book now
           </button>

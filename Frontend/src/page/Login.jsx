@@ -19,7 +19,9 @@ const Login = () => {
           .then((response) => {
             console.log(response);
             if (response.data.access_token) {
-                alert('logged in',response.data.access_token);  
+                alert('logged in',response.data.access_token);
+                localStorage.setItem('token',data.access_token);
+                console.log(localStorage);   
                 window.location.href = '/'; // Redirect to home page
             } else {
               alert('Invalid userID or password ',response.data.message);
