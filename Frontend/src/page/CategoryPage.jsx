@@ -5,6 +5,7 @@ import WrapperContainer from '../Components/WrapperContainer'
 import SearchRooms from '../Components/SearchRooms'
 import { Link } from 'react-router-dom'
 import Contex from '../contextApi/Contex'
+import Header from "../Components/Header";
 
 const CategoryPage = () => {
 
@@ -23,6 +24,7 @@ const CategoryPage = () => {
 
   return (
     <div className="bg-[#d27548]">
+      <nav><Header/></nav>
       <WrapperContainer>
       <SearchRooms />
       <div id="showcase-Section" className="flex flex-wrap flex-col md:flex-row justify-between items-center pt-8">

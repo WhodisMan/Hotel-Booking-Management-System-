@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import WrapperContainer from "../Components/WrapperContainer";
 import { useParams } from "react-router-dom";
 import { HotelRoomDetail } from "../Detail/HotelDetail";
+import Header from "../Components/Header";
 
 const SingleHotelView = () => {
 
@@ -26,6 +27,7 @@ const SingleHotelView = () => {
       className="bg-cover bg-center h-screen relative"
       style={{ backgroundImage: `url(${images})` }}
     >
+      <nav><Header/></nav>
       <WrapperContainer>
         <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent"></div>
         <div className=" absolute">

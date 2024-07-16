@@ -13,8 +13,8 @@ function App() {
   return (
     <>
     <GlobleCotext>
+
       <BrowserRouter>
-        <Header />
         <Routes>
           <Route path="/" element={<Home/>}/>
           <Route path="/CategoryPage" element={<CategoryPage/>}/>
