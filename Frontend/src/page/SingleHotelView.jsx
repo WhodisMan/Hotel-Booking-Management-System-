@@ -23,11 +23,13 @@ const SingleHotelView = () => {
   const { images, capacity, name, description, type, price, extras } = hotelDetail[0];
 
   return (
+    <div>
+      <nav><Header/></nav>
     <div
       className="bg-cover bg-center h-screen relative"
       style={{ backgroundImage: `url(${images})` }}
     >
-      <nav><Header/></nav>
+      
       <WrapperContainer>
         <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent"></div>
         <div className=" absolute">
@@ -49,6 +51,7 @@ const SingleHotelView = () => {
           </div>
         </div>
       </WrapperContainer>
+    </div>
     </div>
   );
 };
