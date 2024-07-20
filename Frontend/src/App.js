@@ -1,3 +1,4 @@
+
 import Footer from "./Components/Footer";
 import Header from "./Components/Header";
 import Home from "./page/Home";
@@ -31,3 +32,5 @@ function App() {
 }
 
 export default App;
+
+
