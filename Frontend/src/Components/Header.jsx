@@ -17,6 +17,7 @@ const Header = () => {
             <Link to={"/"}><li className="px-4 relative cursor-pointer">Home</li></Link>
             <Link to={"/CategoryPage"}><li className="px-4 relative cursor-pointer">Category</li></Link>
             <Link to={"/Login"}><li className="px-4 relative cursor-pointer">Register</li></Link>
+            <Link to={"/Profile"}><li className="px-4 relative cursor-pointer">Profile</li></Link>
           </ul>
         </div>
         <div className="w-20 md:w-30">

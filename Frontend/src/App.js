@@ -8,6 +8,7 @@ import GlobleCotext from "./contextApi/GlobleContex";
 import Register from "./page/Register";
 import CategoryPage from "./page/CategoryPage";
 import SingleHotelView from "./page/SingleHotelView";
+import Profile from "./page/profile";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="/Login" element={<Login/>} component={Login}/>
           <Route path="*" element={<ErrorPage/>}/>
           <Route path="/SingleHotelView/:id" element={<SingleHotelView/>}/>
+          <Route path="/Profile" element={<Profile/>}/>
         </Routes>
       </BrowserRouter>
       <Footer />
