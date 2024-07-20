@@ -4,6 +4,7 @@ import { Button } from "@mui/material";
 import DensityMediumIcon from "@mui/icons-material/DensityMedium";
 import logo from "../assets/logo.png";
 import { Link } from "react-router-dom";
+import './Header.css'
 
 const Header = () => {
   const [isMenu, setIsMenu] = useState(false);
@@ -50,7 +51,7 @@ const Header = () => {
         </div>
       </div>
       <div className="relative">
-        <div className={`${isMenu ? "block" : "hidden"} bg-[#d27548] text-white md:hidden absolute rounded left-0 right-0`}>
+        <div className={`${isMenu ? "block" : "hidden"} bg-translucent `}>
           <ul className="list-none capitalize flex flex-col">
             <Link to={"/"}><li className="p-1 text-center cursor-pointer hover:bg-orange-700" onClick={() => setIsMenu(false)}>Home</li></Link>
             <Link to={"/Category"}><li className="p-1 text-center cursor-pointer hover:bg-orange-700" onClick={() => setIsMenu(false)}>Category</li></Link>
