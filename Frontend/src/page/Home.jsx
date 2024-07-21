@@ -8,7 +8,6 @@ const Home = () => {
   return (
     <>
      <page>
-     <nav><Header/></nav>
      <HeroSection />
      <SliderCarousel />
      <PackageDetail />

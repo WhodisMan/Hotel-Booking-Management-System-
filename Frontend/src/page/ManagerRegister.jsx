@@ -34,9 +34,6 @@ const ManagerRegister = () => {
 
   return (
     <div>
-      <nav>
-        <Header />
-      </nav>
       <div
         className="d-flex justify-content-center align-items-center text-center vh-100"
         style={{

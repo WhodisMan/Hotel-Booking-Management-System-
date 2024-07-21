@@ -101,9 +101,6 @@ const SingleHotelView = () => {
 
   return (
     <div>
-      <nav>
-        <Header />
-      </nav>
       <div className="bg-cover bg-center h-screen relative" style={{ backgroundImage: `url(${images})` }}>
         <WrapperContainer>
           <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent"></div>

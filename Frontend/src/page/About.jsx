@@ -5,8 +5,6 @@ import Header from '../Components/Header';
 const AboutPage = () => {
   return (
     <div>
-      <Header />
-
       <div className="container mt-4">
         <div className="row">
           <div className="col-lg-8 offset-lg-2">

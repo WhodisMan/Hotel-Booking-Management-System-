@@ -1,44 +1,50 @@
-
-import Footer from "./Components/Footer";
-import Header from "./Components/Header";
-import Home from "./page/Home";
-import Login from "./page/Login"
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { ErrorPage } from "./page/ErrorPage";
-import GlobleCotext from "./contextApi/GlobleContex";
-import Register from "./page/Register";
-import CategoryPage from "./page/CategoryPage";
-import SingleHotelView from "./page/SingleHotelView";
-import Profile from "./page/profile";
-import ManagerRegister from "./page/ManagerRegister";
-import ManagerLogin from "./page/ManagerLogin";
-import About from "./page/About";
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import GlobleContext from './contextApi/GlobleContex';
+import Home from './page/Home';
+import About from './page/About';
+import CategoryPage from './page/CategoryPage';
+import Register from './page/Register';
+import Login from './page/Login';
+import ManagerRegister from './page/ManagerRegister';
+import ManagerLogin from './page/ManagerLogin';
+import ErrorPage from './page/ErrorPage';
+import SingleHotelView from './page/SingleHotelView';
+import Profile from './page/Profile';
+import Header from './Components/Header';
+import HeaderUser from './Components/HeaderUser';
+import Footer from './Components/Footer';
 
 function App() {
-  return (
-    <>
-    <GlobleCotext>
+  const [userType, setUserType] = useState('');
 
+  useEffect(() => {
+    const storedUserType = localStorage.getItem('UserType');
+    if (storedUserType) {
+      setUserType(storedUserType);
+    }
+  }, []);
+
+  return (
+    <GlobleContext>
       <BrowserRouter>
+        {userType === 'user' ? <HeaderUser /> : <Header />}
         <Routes>
-          <Route path="/" element={<Home/>}/>
-          <Route path="/About" element={<About/>}/>
-          <Route path="/CategoryPage" element={<CategoryPage/>}/>
-          <Route path="/Register" element={<Register/>} component={Register}/>
-          <Route path="/Login" element={<Login/>} component={Login}/>
-          <Route path="/ManagerRegister" element={<ManagerRegister/>}/>
-          <Route path="/ManagerLogin" element={<ManagerLogin/>}/>
-          <Route path="*" element={<ErrorPage/>}/>
-          <Route path="/SingleHotelView/:id" element={<SingleHotelView/>}/>
-          <Route path="/Profile" element={<Profile/>}/>
+          <Route path="/" element={<Home />} />
+          <Route path="/About" element={<About />} />
+          <Route path="/CategoryPage" element={<CategoryPage />} />
+          <Route path="/Register" element={<Register />} />
+          <Route path="/Login" element={<Login />} />
+          <Route path="/ManagerRegister" element={<ManagerRegister />} />
+          <Route path="/ManagerLogin" element={<ManagerLogin />} />
+          <Route path="/SingleHotelView/:id" element={<SingleHotelView />} />
+          <Route path="/Profile" element={<Profile />} />
+          <Route path="*" element={<ErrorPage />} />
         </Routes>
       </BrowserRouter>
       <Footer />
-      </GlobleCotext>
-    </>
+    </GlobleContext>
   );
 }
 
 export default App;
-
-
