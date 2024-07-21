@@ -13,6 +13,7 @@ import SingleHotelView from './page/SingleHotelView';
 import Profile from './page/Profile';
 import Header from './Components/Header';
 import HeaderUser from './Components/HeaderUser';
+import HeaderManager from './Components/HeaderManager'; // Import HeaderManager component
 import Footer from './Components/Footer';
 
 function App() {
@@ -28,7 +29,11 @@ function App() {
   return (
     <GlobleContext>
       <BrowserRouter>
-        {userType === 'user' ? <HeaderUser /> : <Header />}
+        {/* Conditionally render Header based on userType */}
+        {userType === 'user' && <HeaderUser />}
+        {userType === 'manager' && <HeaderManager />}
+        {userType !== 'user' && userType !== 'manager' && <Header />}
+        
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/About" element={<About />} />
