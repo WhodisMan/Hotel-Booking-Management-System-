@@ -1,7 +1,5 @@
-
 import React, { useState } from "react";
 import { Button } from "@mui/material";
-import DensityMediumIcon from "@mui/icons-material/DensityMedium";
 import logo from "../assets/logo.png";
 import { Link } from "react-router-dom";
 import './Header.css'
@@ -45,9 +43,17 @@ const Header = () => {
               Register
             </Button>
           </Link>
+          {/* Manager login button */}
+          <Link to={"/ManagerLogin"}>
+            <Button variant="contained" color="secondary" sx={{ textTransform: 'uppercase', fontWeight: 'normal' }}>
+              Manager Login
+            </Button>
+          </Link>
         </div>
         <div className="block md:hidden px-8 p-4" onClick={() => setIsMenu(!isMenu)}>
-          <DensityMediumIcon />
+          <Button variant="contained" color="secondary" sx={{ textTransform: 'uppercase', fontWeight: 'normal' }}>
+            Manager Login
+          </Button>
         </div>
       </div>
       <div className="relative">
@@ -58,6 +64,8 @@ const Header = () => {
             <Link to={"/About"}><li className="p-1 text-center cursor-pointer hover:bg-orange-700" onClick={() => setIsMenu(false)}>About</li></Link>
             <Link to={"/Login"}><li className="p-1 text-center cursor-pointer hover:bg-orange-700" onClick={() => setIsMenu(false)}>Login</li></Link>
             <Link to={"/Register"}><li className="p-1 text-center cursor-pointer hover:bg-orange-700" onClick={() => setIsMenu(false)}>Register</li></Link>
+            {/* Manager login item in mobile menu */}
+            <Link to={"/ManagerLogin"}><li className="p-1 text-center cursor-pointer hover:bg-orange-700" onClick={() => setIsMenu(false)}>Manager Login</li></Link>
           </ul>
         </div>
       </div>
@@ -66,4 +74,3 @@ const Header = () => {
 };
 
 export default Header;
-
