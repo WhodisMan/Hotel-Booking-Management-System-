@@ -7,6 +7,12 @@ import { Link } from "react-router-dom";
 const HeaderUser = () => {
   const [isMenu, setIsMenu] = useState(false);
 
+  const handleLogout = () => {
+    // Implement your logout logic here
+    console.log("User logged out");
+    // Example: navigate("/login"); // Redirect to the login page
+  };
+
   return (
     <>
       <div className="flex justify-between items-center p-4 pt-8 container m-auto">
@@ -29,7 +35,7 @@ const HeaderUser = () => {
         </div>
         <div className="w-20 md:w-30 mx-auto">
           <Link to={'/'}>
-             <img src={logo} alt="logo" />
+            <img src={logo} alt="logo" />
           </Link>
         </div>
         <div className="hidden md:flex space-x-4">
@@ -38,6 +44,9 @@ const HeaderUser = () => {
               Profile
             </Button>
           </Link>
+          <Button variant="contained" color="secondary" onClick={handleLogout}>
+            Logout
+          </Button>
         </div>
         <div className="block md:hidden px-8 p-4" onClick={() => setIsMenu(!isMenu)}>
           <DensityMediumIcon />
