@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import WrapperContainer from "../Components/WrapperContainer";
-import { useParams } from "react-router-dom";
-import Header from "../Components/Header";
-import { HotelRoomDetail } from "../Detail/HotelDetail"; // Importing HotelRoomDetail
-import { RoomDetail } from "../Detail/RoomDetail"; // Importing RoomDetail
+import { useParams, Link } from "react-router-dom";
+import { HotelRoomDetail } from "../Detail/HotelDetail";
+import { RoomDetail } from "../Detail/RoomDetail";
+import { ArrowBack } from "@mui/icons-material"; // Importing ArrowBack icon from Material UI
 
 const SingleHotelView = () => {
   const { id } = useParams();
@@ -104,10 +104,16 @@ const SingleHotelView = () => {
       <div className="bg-cover bg-center h-screen relative" style={{ backgroundImage: `url(${images})` }}>
         <WrapperContainer>
           <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent"></div>
-          <div className=" absolute">
+          <div className="absolute">
             <div className="relative container text-white capitalize">
-              <div className="flex justify-between items-center py-8">
-                <div className="p-4">
+              <div className="flex items-center py-8">
+                {/* Back button with "Back" text and ArrowBack icon */}
+                <Link to="/CategoryPage" className="absolute left-4 top-4 flex items-center text-white text-lg font-semibold no-underline">
+                  <ArrowBack style={{ fontSize: 30 }} />
+                  <span className="ml-2">Back</span>
+                </Link>
+                {/* Heading */}
+                <div className="p-4 pl-12">
                   <h1 className="text-7xl font-bold mb-2">{name}</h1>
                   <p className="font-bold text-3xl">{city}</p>
                 </div>

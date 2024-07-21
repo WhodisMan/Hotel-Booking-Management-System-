@@ -88,7 +88,7 @@ const Profile = () => {
 
   return (
     <div>
-      <HeaderUser /> {/* Header component */}
+
       <Container maxWidth="sm"> {/* Center the content */}
         <Paper elevation={3} className="profile-container">
           <Typography variant="h4" gutterBottom>
