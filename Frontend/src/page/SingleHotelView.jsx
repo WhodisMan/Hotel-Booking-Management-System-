@@ -114,20 +114,21 @@ const SingleHotelView = () => {
                 </Link>
                 {/* Heading */}
                 <div className="p-4 pl-12">
-                  <h1 className="text-7xl font-bold mb-2">{name}</h1>
+                  <h1 className="text-8xl font-bold mb-2">{name}</h1>
                   <p className="font-bold text-3xl">{city}</p>
                 </div>
               </div>
               <div className="p-4">
-                <p className="text-4xl">{hotelDescription}</p>
-                <ul className="pl-6 text-lg">
-                  {extras.map((detail, i) => (
-                    <li className="list-disc" key={i}>
-                      {detail}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <p className="text-5xl">{hotelDescription}</p>
+              <ul className="pl-6 text-lg list-disc list-inside">
+                {extras.map((detail, i) => (
+                  <li key={i} className="mb-2">
+                    {detail}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
             </div>
           </div>
         </WrapperContainer>

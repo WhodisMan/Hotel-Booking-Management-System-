@@ -42,6 +42,11 @@ const CategoryPage = () => {
     } else {
       fetchCitiesFromAPI();
     }
+
+    // Cleanup function to clear cityProperties from local storage when component unmounts
+    return () => {
+      localStorage.removeItem('cityProperties');
+    };
   }, []);
 
   const handleMouseEnter = index => {
@@ -68,7 +73,7 @@ const CategoryPage = () => {
       });
   };
 
-  const cityName = localStorage.getItem('cityProperties') ? JSON.parse(localStorage.getItem('cityProperties'))[0][3] : null;
+  const cityName = cityProperties.length > 0 ? cityProperties[0][3] : null;
   const filteredDetails = detail.filter(item => item.city === cityName);
 
   return (
@@ -102,9 +107,9 @@ const CategoryPage = () => {
           </div>
         )}
 
-        <div id="showcase-Section" className="flex flex-wrap flex-col md:flex-row justify-between items-center pt-8">
+        <div id="showcase-Section" className="pt-8">
           {filteredDetails.map(detail => (
-            <Link to={`/SingleHotelView/${detail.id}`} key={detail.id}>
+            <Link to={`/SingleHotelView/${detail.id}`} key={detail.id} className="inline-block mb-4 md:w-1/4">
               <Card detail={detail} />
             </Link>
           ))}
