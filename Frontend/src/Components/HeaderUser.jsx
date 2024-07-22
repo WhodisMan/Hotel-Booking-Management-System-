@@ -1,16 +1,36 @@
 import React, { useState } from "react";
-import { Button } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
 import DensityMediumIcon from "@mui/icons-material/DensityMedium";
 import logo from "../assets/logo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate from react-router-dom
 
 const HeaderUser = () => {
   const [isMenu, setIsMenu] = useState(false);
+  const [openLogoutDialog, setOpenLogoutDialog] = useState(false); // State for logout confirmation dialog
+  const navigate = useNavigate(); // React Router navigate function
 
   const handleLogout = () => {
-    // Implement your logout logic here
-    console.log("User logged out");
-    // Example: navigate("/login"); // Redirect to the login page
+    // Show logout confirmation dialog
+    setOpenLogoutDialog(true);
+  };
+
+  const confirmLogout = () => {
+    // Clear local storage
+    localStorage.clear();
+
+    // Close the logout confirmation dialog
+    setOpenLogoutDialog(false);
+
+    // Navigate to the home page
+    navigate("/");
+
+    // Refresh the page
+    window.location.reload();
+  };
+
+  const cancelLogout = () => {
+    // Close the logout confirmation dialog
+    setOpenLogoutDialog(false);
   };
 
   return (
@@ -52,6 +72,31 @@ const HeaderUser = () => {
           <DensityMediumIcon />
         </div>
       </div>
+      
+      {/* Logout Confirmation Dialog */}
+      <Dialog
+        open={openLogoutDialog}
+        onClose={cancelLogout}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">Logout?</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Are you sure you want to logout?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={cancelLogout} color="primary">
+            No
+          </Button>
+          <Button onClick={confirmLogout} color="secondary" autoFocus>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Mobile Menu */}
       <div className="relative">
         <div className={`${isMenu ? "block" : "hidden"} bg-[#d27548] text-white md:hidden absolute rounded left-0 right-0`}>
           <ul className="list-none capitalize flex flex-col">
