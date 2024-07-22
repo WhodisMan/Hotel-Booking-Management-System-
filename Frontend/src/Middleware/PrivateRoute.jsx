@@ -1,6 +1,6 @@
 
 import { Navigate } from 'react-router-dom';
-import { getSessionToken, getSessionUser } from '../../utils/authentication';
+import { getSessionToken, getSessionUser } from '../Components/authentication';
 
 function PrivateRoute({ children }) {
   const user = getSessionUser();

@@ -15,6 +15,7 @@ import Header from './Components/Header';
 import HeaderUser from './Components/HeaderUser';
 import HeaderManager from './Components/HeaderManager'; // Import HeaderManager component
 import Footer from './Components/Footer';
+import Dashboard from './Manager/Dashboard';
 
 function App() {
   const [userType, setUserType] = useState('');
@@ -45,6 +46,7 @@ function App() {
           <Route path="/SingleHotelView/:id" element={<SingleHotelView />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<ErrorPage />} />
+          <Route path="/Dashboard" element={<Dashboard/>}/>
         </Routes>
       </BrowserRouter>
       <Footer />
