@@ -14,7 +14,9 @@ app.config["DEBUG"] = True
 app.config['JWT_SECRET_KEY'] = 'your_secret_key_here'
 jwt = JWTManager(app)
 
-app.config['MYSQL_HOST'] = '13.54.206.67'
+db_ip = '3.25.100.176'
+
+app.config['MYSQL_HOST'] = db_ip
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'Styl@123'
 app.config['MYSQL_DB'] = 'HOTEL'

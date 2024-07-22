@@ -8,7 +8,7 @@ import Header from '../Components/Header';
 const ManagerRegister = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [propertyId, setPropertyId] = useState('');
+  const [pid, setPid] = useState(0); // Initialize pid as an integer
   const [email, setEmail] = useState('');
   const navigate = useNavigate();
 
@@ -16,7 +16,7 @@ const ManagerRegister = () => {
     event.preventDefault();
 
     axios
-      .post('http://127.0.0.1:5000/signup/manager', { username, password, propertyId, email })
+      .post('http://127.0.0.1:5000/signup/mngr', { username, password, pid, email }) // Send pid as an integer
       .then((response) => {
         console.log(response);
         if (response.data.error) {
@@ -70,15 +70,15 @@ const ManagerRegister = () => {
               />
             </div>
             <div className="mb-3 text-start">
-              <label htmlFor="exampleInputPropertyId1" className="form-label">
+              <label htmlFor="exampleInputPid1" className="form-label">
                 <strong>Property ID</strong>
               </label>
               <input
-                type="text"
+                type="number" // Use type="number" for integer input
                 placeholder="Enter Property ID"
                 className="form-control"
-                id="exampleInputPropertyId1"
-                onChange={(event) => setPropertyId(event.target.value)}
+                id="exampleInputPid1"
+                onChange={(event) => setPid(parseInt(event.target.value))} // Parse input value to integer
                 required
               />
             </div>
