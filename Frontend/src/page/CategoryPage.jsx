@@ -1,39 +1,118 @@
-import React, { useContext } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import WrapperContainer from '../Components/WrapperContainer';
 import { HotelRoomDetail } from '../Detail/HotelDetail';
 import { Card } from '../Components/Slider';
-import WrapperContainer from '../Components/WrapperContainer';
-import SearchRooms from '../Components/SearchRooms';
 import { Link } from 'react-router-dom';
-import Contex from '../contextApi/Contex';
-import Header from "../Components/Header";
 
 const CategoryPage = () => {
-
-  // const { Room, Guest, PriceRange } = useContext(Contex);
+  const [cities, setCities] = useState([]);
+  const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [cityProperties, setCityProperties] = useState([]);
 
   let detail = HotelRoomDetail;
-  // if (Room !== '' && Room !== 'All') {
-  //   detail = HotelRoomDetail.filter(item => item.type === Room);
-  // }
-  // if (Guest !== '') {
-  //   detail = detail.filter(item => item.capacity === Guest);
-  // }
-  // if (PriceRange !== '') {
-  //   detail = detail.filter(item => item.price === PriceRange);
-  // }
+
+  useEffect(() => {
+    const fetchCitiesFromLocalStorage = () => {
+      const storedCities = localStorage.getItem('cities');
+      if (storedCities) {
+        setCities(JSON.parse(storedCities));
+      }
+    };
+
+    const fetchCitiesFromAPI = () => {
+      setLoading(true);
+      axios.get('http://127.0.0.1:5000/home')
+        .then(response => {
+          const { cities } = response.data;
+          setCities(cities);
+          localStorage.setItem('cities', JSON.stringify(cities));
+        })
+        .catch(error => {
+          console.error('Error fetching cities and properties:', error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    };
+
+    if (localStorage.getItem('cities')) {
+      fetchCitiesFromLocalStorage();
+    } else {
+      fetchCitiesFromAPI();
+    }
+  }, []);
+
+  const handleMouseEnter = index => {
+    setHoveredIndex(index);
+  };
+
+  const handleMouseLeave = () => {
+    setHoveredIndex(null);
+  };
+
+  const handleCityClick = cityName => {
+    setLoading(true);
+    axios.post('http://localhost:5000/city', { city: String(cityName) })
+      .then(response => {
+        const { properties } = response.data;
+        localStorage.setItem('cityProperties', JSON.stringify(properties));
+        setCityProperties(properties);
+      })
+      .catch(error => {
+        console.error('Error fetching city properties:', error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  };
+
+  const cityName = localStorage.getItem('cityProperties') ? JSON.parse(localStorage.getItem('cityProperties'))[0][3] : null;
+  const filteredDetails = detail.filter(item => item.city === cityName);
 
   return (
-    <div className="bg-[#0b8185]">
+    <div className="bg-[#0b8185] pt-4 pb-8">
       <WrapperContainer>
-    
-        <div id="showcase-Section" className="flex flex-wrap flex-col md:flex-row justify-start items-center pt-8 gap-4">
-          {detail.map(detail => (
-            <Link to={`/SingleHotelView/${detail.id}`} key={detail.id}><Card detail={detail} /></Link>
+        <div className="mt-4 mb-8 text-white text-5xl font-bold text-center">Our Locations</div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {cities.map((city, index) => (
+            <div
+              key={index}
+              className={`bg-white p-4 rounded-lg shadow-md text-center cursor-pointer transition duration-300 transform hover:shadow-lg hover:bg-gray-100 hover:text-gray-800 hover:scale-105`}
+              onMouseEnter={() => handleMouseEnter(index)}
+              onMouseLeave={handleMouseLeave}
+              onClick={() => handleCityClick(city)}
+              style={{ fontSize: '1.2rem', margin: '10px' }}
+            >
+              <h3 className="text-xl font-semibold">{city}</h3>
+            </div>
           ))}
         </div>
+        
+        {loading && (
+          <div className="flex justify-center mt-8">
+            <div className="loader"></div> {/* Replace with your loading animation component */}
+          </div>
+        )}
+
+        {cityProperties.length > 0 && (
+          <div className="mt-8">
+            <h2 className="text-3xl font-bold text-white mb-1">Hotels in {cityProperties[0][3]}</h2>
+          </div>
+        )}
+
+        <div id="showcase-Section" className="flex flex-wrap flex-col md:flex-row justify-between items-center pt-8">
+          {filteredDetails.map(detail => (
+            <Link to={`/SingleHotelView/${detail.id}`} key={detail.id}>
+              <Card detail={detail} />
+            </Link>
+          ))}
+        </div>
+        
       </WrapperContainer>
     </div>
   );
-}
+};
 
 export default CategoryPage;
