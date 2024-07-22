@@ -10,7 +10,7 @@ import ManagerRegister from './page/ManagerRegister';
 import ManagerLogin from './page/ManagerLogin';
 import ErrorPage from './page/ErrorPage';
 import SingleHotelView from './page/SingleHotelView';
-import Profile from './page/Profile';
+import Profile from './page/profile';
 import Header from './Components/Header';
 import HeaderUser from './Components/HeaderUser';
 import HeaderManager from './Components/HeaderManager'; // Import HeaderManager component
@@ -43,7 +43,7 @@ function App() {
           <Route path="/ManagerRegister" element={<ManagerRegister />} />
           <Route path="/ManagerLogin" element={<ManagerLogin />} />
           <Route path="/SingleHotelView/:id" element={<SingleHotelView />} />
-          <Route path="/Profile" element={<Profile />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </BrowserRouter>

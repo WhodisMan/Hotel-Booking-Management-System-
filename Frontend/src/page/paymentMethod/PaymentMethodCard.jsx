@@ -46,14 +46,6 @@ export default class PaymentMethodCard extends Component {
                   </div>
                   <div id={styles.days}>3 Nights</div>
                 </div>
-                <div className="col-3">
-                  <img
-                    src="/images/bed.webp"
-                    id={styles.img}
-                    className="card-img "
-                    alt=""
-                  />
-                </div>
               </div>
               <div
                 className="d-flex justify-content-between pl-0"
