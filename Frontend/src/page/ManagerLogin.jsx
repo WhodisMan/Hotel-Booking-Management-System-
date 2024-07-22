@@ -13,7 +13,7 @@ const ManagerLogin = () => {
     const userData = { username, password };
 
     axios
-      .post('http://127.0.0.1:5000/login/manager', userData) // Adjusted endpoint for manager login
+      .post('http://127.0.0.1:5000/login/mngr', userData) // Adjusted endpoint for manager login
       .then((response) => {
         console.log(response);
         if (response.data.access_token) {
