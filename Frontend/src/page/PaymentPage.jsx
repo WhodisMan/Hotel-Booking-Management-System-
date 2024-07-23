@@ -1,45 +1,51 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const PaymentPage = () => {
-    const [bookingDetails, setBookingDetails] = useState(null); // State to hold booking details
-    const [selectedPropertyList, setSelectedPropertyList] = useState([]); // State to hold selected properties as list
-    const [uid, setUid] = useState(null); // State to hold user ID
+    const [bookingDetails, setBookingDetails] = useState(null);
+    const [selectedPropertyList, setSelectedPropertyList] = useState([]);
+    const [uid, setUid] = useState(null);
+    const [bookingStatus, setBookingStatus] = useState(null);
+    const [error, setError] = useState(null);
+    const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+    const navigate = useNavigate();
+
+    const getNumberOfDays = (checkInDate, checkOutDate) => {
+        const checkInTime = new Date(checkInDate).getTime();
+        const checkOutTime = new Date(checkOutDate).getTime();
+        const difference = checkOutTime - checkInTime;
+        const numberOfDays = difference / (1000 * 3600 * 24);
+        return Math.floor(numberOfDays);
+    };
 
     useEffect(() => {
-        // Fetch booking details from localStorage
         const storedBookingDetails = localStorage.getItem('bookingDetails');
         if (storedBookingDetails) {
             setBookingDetails(JSON.parse(storedBookingDetails));
         }
     
-        // Fetch selectedProperty from localStorage
         const storedSelectedProperty = localStorage.getItem('selectedProperty');
         if (storedSelectedProperty) {
-            // Split the string into an array using ', ' as the delimiter
             const propertyList = storedSelectedProperty.split(',');
             setSelectedPropertyList(propertyList);
         }
 
-        // Fetch user ID from server on component mount
         fetchUid();
-    }, []); // Empty dependency array ensures this effect runs only once on mount
+    }, []);
 
     const fetchUid = () => {
-        // Example endpoint URL; replace with your actual endpoint
         const apiUrl = 'http://localhost:5000/protected';
-
-        // Retrieve access token from localStorage
         const accessToken = localStorage.getItem('token');
-
-        // Make sure access token exists before making the API call
+        
         if (!accessToken) {
             console.error('Access token not found in localStorage');
+            setError('Access token not found');
+            showLoginExpiredPopup(); // Show login expired popup
             return;
         }
 
-        // Make GET request using Axios to retrieve uid
         axios.get(apiUrl, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
@@ -52,49 +58,77 @@ const PaymentPage = () => {
         })
         .catch(error => {
             console.error('Error fetching user ID:', error);
-            // Handle error appropriately
+            setError('Failed to fetch user ID');
+            showLoginExpiredPopup(); // Show login expired popup
         });
     }
 
-    const handleConfirmBooking = () => {
-        // Example endpoint URL; replace with your actual endpoint
-        const apiUrl = 'http://localhost:5000/book';
-        
-        // Example payload structure; adjust according to your API's requirements
-        const payload = {
-            pid: selectedPropertyList[0],  // Example: Property ID from selectedPropertyList
-            uid: uid,                      // Use retrieved uid
-            r_cat: bookingDetails.roomType, // Example: Room category from selectedPropertyList
-            checkin: bookingDetails.checkInDate,    // Example: Check-in date from bookingDetails
-            checkout: bookingDetails.checkOutDate,  // Example: Check-out date from bookingDetails
-            g_count: bookingDetails.numGuests,      // Example: Number of guests from bookingDetails
-            amount: selectedPropertyList[7 + bookingDetails.roomType] // Example: Amount from selectedPropertyList
-        };
+    const showLoginExpiredPopup = () => {
+        // Optionally, you can use a state to manage this popup
+        alert('Login expired. Redirecting to home page.');
+        localStorage.clear();
+        navigate('/');
+        localStorage.clear(); // Clear local storage upon login expiry
+    }
 
-        // Retrieve access token from localStorage
+    const handleConfirmBooking = () => {
+        const apiUrl = 'http://localhost:5000/book';
         const accessToken = localStorage.getItem('token');
 
-        // Make sure access token exists before making the API call
         if (!accessToken) {
             console.error('Access token not found in localStorage');
+            setError('Access token not found');
+            showLoginExpiredPopup(); // Show login expired popup
             return;
         }
 
-        // Make POST request using Axios
-        axios.post(apiUrl, payload, {
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
-                'Content-Type': 'application/json'
+        const numRooms = Math.ceil(bookingDetails.numGuests / 4);
+        const bookingRequests = [];
+        var guests = bookingDetails.numGuests;
+
+        for (let i = 0; i < numRooms; i++) {
+            if (guests >= 4){
+                var tempguests = 4;
+                guests = guests-4;
             }
-        })
-        .then(response => {
-            console.log('Booking successful:', response.data);
-            // Redirect or show success message here
-        })
-        .catch(error => {
-            console.error('Error booking:', error);
-            // Handle error appropriately
-        });
+            else{
+                var tempguests = guests;
+            }
+            const payload = {
+                pid: selectedPropertyList[0],
+                uid: uid,
+                r_cat: bookingDetails.roomType,
+                checkin: bookingDetails.checkInDate,
+                checkout: bookingDetails.checkOutDate,
+                g_count: tempguests,
+                amount: (selectedPropertyList[7 + bookingDetails.roomType])*getNumberOfDays(bookingDetails.checkInDate,bookingDetails.checkOutDate)
+            };
+
+            bookingRequests.push(
+                axios.post(apiUrl, payload, {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                })
+            );
+        }
+
+        Promise.all(bookingRequests)
+            .then(responses => {
+                console.log('All bookings successful:', responses);
+                setBookingStatus('All bookings successful');
+                setShowConfirmationModal(true);
+            })
+            .catch(error => {
+                console.error('Error booking:', error);
+                setError('Error booking rooms');
+            });
+    }
+
+    const handleModalClose = () => {
+        setShowConfirmationModal(false);
+        navigate('/');
     }
 
     return (
@@ -113,11 +147,15 @@ const PaymentPage = () => {
                                     <p><strong>Price:</strong> {selectedPropertyList[7 + bookingDetails.roomType]}</p>
                                     <p><strong>Check-in Date:</strong> {bookingDetails.checkInDate}</p>
                                     <p><strong>Check-out Date:</strong> {bookingDetails.checkOutDate}</p>
+                                    <p><strong>Number of Nights:</strong> {getNumberOfDays(bookingDetails.checkInDate, bookingDetails.checkOutDate)}</p>
                                     <p><strong>Number of Guests:</strong> {bookingDetails.numGuests}</p>
                                     <p><strong>Number of Rooms:</strong> {Math.ceil(bookingDetails.numGuests / 4)}</p>
-                                    <p><strong>Total Price:</strong> {selectedPropertyList[7 + bookingDetails.roomType] * Math.ceil(bookingDetails.numGuests / 4)}</p>
+                                    <p><strong>Total Price:</strong> {getNumberOfDays(bookingDetails.checkInDate, bookingDetails.checkOutDate) * (selectedPropertyList[7 + bookingDetails.roomType] * Math.ceil(bookingDetails.numGuests / 4))}</p>
                                     
                                     <button onClick={handleConfirmBooking} className="btn btn-primary mt-3">Confirm Booking</button>
+
+                                    {bookingStatus && <p className="text-success">{bookingStatus}</p>}
+                                    {error && <p className="text-danger">{error}</p>}
                                 </>
                             ) : (
                                 <p>Loading booking details...</p>
@@ -126,6 +164,25 @@ const PaymentPage = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Confirmation Modal */}
+            {showConfirmationModal && (
+                <div className="modal show" tabIndex="-1" role="dialog" style={{ display: 'block' }}>
+                    <div className="modal-dialog" role="document">
+                        <div className="modal-content">
+                            <div className="modal-header">
+                                <h5 className="modal-title">Booking Confirmed</h5>
+                            </div>
+                            <div className="modal-body">
+                                <p>Your booking has been confirmed!</p>
+                            </div>
+                            <div className="modal-footer">
+                                <button type="button" className="btn btn-primary color-red" onClick={handleModalClose}>Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
