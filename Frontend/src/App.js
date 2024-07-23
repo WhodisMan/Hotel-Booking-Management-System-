@@ -11,6 +11,7 @@ import ManagerLogin from './page/ManagerLogin';
 import ErrorPage from './page/ErrorPage';
 import SingleHotelView from './page/SingleHotelView';
 import Profile from './page/Profile';
+import PaymentPage from './page/PaymentPage';
 import Header from './Components/Header';
 import HeaderUser from './Components/HeaderUser';
 import HeaderManager from './Components/HeaderManager'; // Import HeaderManager component
@@ -44,6 +45,7 @@ function App() {
           <Route path="/ManagerLogin" element={<ManagerLogin />} />
           <Route path="/SingleHotelView/:id" element={<SingleHotelView />} />
           <Route path="/Profile" element={<Profile />} />
+          <Route path="/PaymentPage" element={<PaymentPage />} />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </BrowserRouter>

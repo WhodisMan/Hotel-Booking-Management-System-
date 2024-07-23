@@ -45,7 +45,7 @@ const CategoryPage = () => {
 
     // Cleanup function to clear cityProperties from local storage when component unmounts
     return () => {
-      localStorage.removeItem('cityProperties');
+
     };
   }, []);
 

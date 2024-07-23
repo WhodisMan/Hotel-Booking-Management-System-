@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import WrapperContainer from "../Components/WrapperContainer";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link ,useNavigate} from "react-router-dom";
 import { HotelRoomDetail } from "../Detail/HotelDetail";
 import { RoomDetail } from "../Detail/RoomDetail";
 import { ArrowBack } from "@mui/icons-material"; // Importing ArrowBack icon from Material UI
@@ -14,38 +14,79 @@ const SingleHotelView = () => {
   const [checkOutDate, setCheckOutDate] = useState("");
   const [numGuests, setNumGuests] = useState(1);
   const [error, setError] = useState("");
+  const [roomData, setRoomData] = useState(null); // State to store room data
+  const [selectedProperty, setSelectedProperty] = useState();
+  const navigate = useNavigate(); 
 
   useEffect(() => {
-    // Simulating fetching hotel details from a data source
-    const fetchHotelDetail = async () => {
+    // Function to fetch hotel detail and room data
+    const fetchData = async () => {
       try {
-        // Filter hotel detail by id from HotelRoomDetail array
-        const hotelDetailData = HotelRoomDetail.find(detail => detail.id === +id);
+        // Fetch hotel detail from HotelRoomDetail array
+        const hotelDetailData = HotelRoomDetail.find((detail) => detail.id === +id);
         setHotelDetail(hotelDetailData);
+
+        // Make POST request to fetch room data
+        const response = await fetch("http://localhost:5000/hotel", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ hotel_id: hotelDetailData.pid.toString() }),
+        });
+        const data = await response.json();
+        setRoomData(data); // Store room data in state
+
+        // Store room data in local storage
+        localStorage.setItem("roomData", JSON.stringify(data));
+
+        // Retrieve cityProperties from local storage and filter
+        const cityProperties = JSON.parse(localStorage.getItem("cityProperties"));
+        if (cityProperties) {
+          const selectedProperty = cityProperties.filter((property) => property[0] === hotelDetailData.pid);
+          setSelectedProperty(selectedProperty);
+          localStorage.setItem('selectedProperty',selectedProperty);
+          
+
+          // Update hotelDetailData with room type costs
+          hotelDetailData.rt1_cost = selectedProperty[0][8];
+          hotelDetailData.rt2_cost = selectedProperty[0][9];
+          hotelDetailData.rt3_cost = selectedProperty[0][10];
+          hotelDetailData.rt4_cost = selectedProperty[0][11];
+
+
+        }
       } catch (error) {
-        console.error("Error fetching hotel detail:", error);
+        console.error("Error fetching data:", error);
         setHotelDetail(null); // Handle error state if needed
       }
     };
 
-    fetchHotelDetail();
+    
+
+    fetchData();
   }, [id]);
 
-  if (!hotelDetail) {
+  
+
+  if (!hotelDetail || !roomData || !selectedProperty) {
     return null; // You can return a loading indicator or handle the loading state
   }
 
   const {
     name,
     city,
-    price,
     images,
     description: hotelDescription,
     extras,
+    rt1_cost,
+    rt2_cost,
+    rt3_cost,
+    rt4_cost,
   } = hotelDetail;
 
   const handleRoomTypeClick = (roomType) => {
-    const selectedRoom = RoomDetail.find(room => room.type === roomType);
+    const selectedRoom = RoomDetail.find((room) => room.type === roomType);
     setSelectedRoomType(selectedRoom);
     openModal();
   };
@@ -95,8 +136,17 @@ const SingleHotelView = () => {
       checkOutDate,
       numGuests,
     });
+    localStorage.setItem("bookingDetails", JSON.stringify({
+      roomType: selectedRoomType.type,
+      roomName: selectedRoomType.name,
+      checkInDate,
+      checkOutDate,
+      numGuests,
+    }));
+
 
     closeModal();
+    navigate('/PaymentPage');
   };
 
   return (
@@ -119,16 +169,15 @@ const SingleHotelView = () => {
                 </div>
               </div>
               <div className="p-4">
-              <p className="text-5xl">{hotelDescription}</p>
-              <ul className="pl-6 text-lg list-disc list-inside">
-                {extras.map((detail, i) => (
-                  <li key={i} className="mb-2">
-                    {detail}
-                  </li>
-                ))}
-              </ul>
-            </div>
-
+                <p className="text-5xl">{hotelDescription}</p>
+                <ul className="pl-6 text-lg list-disc list-inside">
+                  {extras.map((detail, i) => (
+                    <li key={i} className="mb-2">
+                      {detail}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </WrapperContainer>
@@ -150,6 +199,7 @@ const SingleHotelView = () => {
                 >
                   <h3 className="text-xl font-bold mb-2">{room.name}</h3>
                   <p className="text-sm">{room.idealfor}</p>
+                  <p className="text-lg font-bold">${hotelDetail[`rt${index + 1}_cost`]}</p>
                 </div>
               ))}
             </div>

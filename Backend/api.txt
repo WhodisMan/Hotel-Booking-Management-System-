@@ -3,7 +3,7 @@ curl -X POST -H "Content-Type:application/json" -d '{"username":"test","password
 curl -X POST -H "Content-Type:application/json" -d "{\"username\":\"test\",\"password\":\"password\"}" http://3.104.1.190:8080/login
 
 **getting restricted content
-curl -X GET -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcwODUxMTg1NCwianRpIjoiMmM1ZTVhYzAtYjA2NC00YzIxLTg4MTgtYzc3ODViNDQ0YjAxIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6InRlc3QiLCJuYmYiOjE3MDg1MTE4NTQsImNzcmYiOiI0ZjRlYmE2Yy1kNGRjLTRkNTItODU4MS0xZjU1NzFjZTNjOTkiLCJleHAiOjE3MDg1MTI3NTR9.ma1IgK226CqbrOZUG5dP3En_2QxI7dA0aPqhlDqM26U" http://localhost:5000/protected
+curl -X GET -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcyMTc1Nzg4OCwianRpIjoiOTFjZGViZmEtZjk0Yy00YTU5LWI0ZDktNGJjZGFiMGMyNzNhIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTMsIm5iZiI6MTcyMTc1Nzg4OCwiY3NyZiI6IjJmNTYzNjQ5LTQwZGYtNDE5YS1hODhhLTMzMDJjZjgyMzAwYSIsImV4cCI6MTcyMTc1ODc4OH0.YA6AyXZFRMDTo7KCjnoETZ67kJsxNwMQjgtKfuR0fvQ" http://localhost:5000/protected
 curl -X GET -H "Authorization: Bearer {TOKEN}" http://3.104.1.190:8080/protected
 ─$ curl -X GET http://3.104.1.190:8080/protected
 

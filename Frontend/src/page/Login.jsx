@@ -13,27 +13,26 @@ const Login = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        const userData = { username, password};
-        console.log(userData);
-    
+        const userData = { username, password };
+        
         axios
-          .post('http://127.0.0.1:5000/login', userData)
-          .then((response) => {
-            console.log(response);
-            if (response.data.access_token) {
-                alert('logged in',response.data.access_token);
-                localStorage.setItem('token',response.data.access_token);
-                localStorage.setItem('UserType','user');
-                console.log(localStorage);   
-                window.location.href = '/'; // Redirect to home page
-            } else {
-              alert('Invalid userID or password ',response.data.message);
-            }
-          })
-          .catch((error) => {
-            console.error('Error:', error);
-          });
+            .post('http://127.0.0.1:5000/login', userData)
+            .then((response) => {
+                console.log(response);
+                if (response.data.access_token) {
+                    localStorage.setItem('token', response.data.access_token);
+                    localStorage.setItem('UserType', 'user');
+                    localStorage.setItem('username', username); // Store username
+                    window.location.href = '/'; // Redirect to home page
+                } else {
+                    alert('Invalid userID or password ' + response.data.message);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
     }
+    
 
 
     return (
