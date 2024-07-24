@@ -1,7 +1,18 @@
-import React, { useState } from 'react';
-import HeaderUser from '../Components/HeaderUser';
-import { Container, Typography, Button, Paper, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material'; // Import MUI components
-import './Profile.css'; // Import CSS file for additional styling
+import React, { useState, useEffect } from 'react';
+import { HotelRoomDetail } from '../Detail/HotelDetail';
+import {
+  Container,
+  Typography,
+  Button,
+  Paper,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
+} from '@mui/material';
+import './Profile.css';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const user = {
   name: 'John Doe',
@@ -10,91 +21,157 @@ const user = {
   addr: '123 Main Street, Cityville',
 };
 
-const bookings = [
-  {
-    id: 1,
-    hotelName: 'Example Hotel 1',
-    checkInDate: '2024-07-22',
-    checkOutDate: '2024-07-25',
-    guestCount: 2,
-    amount: '$500',
-    status: 'Confirmed',
-    details: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce feugiat congue tortor, sit amet maximus lacus consectetur vel.',
-  },
-  {
-    id: 2,
-    hotelName: 'Example Hotel 2',
-    checkInDate: '2024-08-05',
-    checkOutDate: '2024-08-08',
-    guestCount: 1,
-    amount: '$300',
-    status: 'Pending',
-    details: 'Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; In vitae sapien sed elit cursus scelerisque.',
-  },
-  {
-    id: 3,
-    hotelName: 'Example Hotel 3',
-    checkInDate: '2023-07-10',
-    checkOutDate: '2023-07-15',
-    guestCount: 3,
-    amount: '$700',
-    status: 'Confirmed',
-    details: 'Integer sollicitudin purus eu elit commodo, ut fermentum quam aliquet. Morbi convallis ante at nisi hendrerit ultricies.',
-  },
-  // Add more bookings as needed
-];
-
 const Profile = () => {
   const [expandedBookingId, setExpandedBookingId] = useState(null);
   const [cancelBookingId, setCancelBookingId] = useState(null);
+  const [bookings, setBookings] = useState([]);
+  const [uid, setUid] = useState(null);
+  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-  const handleBookingClick = (id) => {
-    if (expandedBookingId === id) {
-      setExpandedBookingId(null); // Collapse if already expanded
-    } else {
-      setExpandedBookingId(id); // Expand if not expanded
+  useEffect(() => {
+    fetchUid();
+  }, []); // Fetch UID on initial render
+
+  const fetchUid = () => {
+    const apiUrl = 'http://localhost:5000/protected';
+    const accessToken = localStorage.getItem('token');
+
+    if (!accessToken) {
+      console.error('Access token not found in localStorage');
+      setError('Access token not found');
+      showLoginExpiredPopup(); // Show login expired popup
+      return;
     }
+
+    axios.get(apiUrl, {
+        headers: {
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        console.log('User ID retrieved:', response.data.logged_in_as);
+        setUid(response.data.logged_in_as);
+        postUid(response.data.logged_in_as); // Call function to POST uid
+    })
+    .catch(error => {
+        console.error('Error fetching user ID:', error);
+        setError('Failed to fetch user ID');
+        showLoginExpiredPopup(); // Show login expired popup
+    });
   };
 
-  // Function to check if a date has passed
+  const postUid = (uid) => {
+    const apiUrl = 'http://localhost:5000/bookings';
+    const accessToken = localStorage.getItem('token');
+
+    axios.post(apiUrl, { uid }, {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => {
+      console.log('POST request successful:', response.data);
+
+      // Assuming response.data.result is the array of bookings data
+      const newBookings = convertResponseToBookings(response.data.result);
+
+      // Update the bookings state
+      setBookings(newBookings);
+
+      // Store the bookings data in local storage
+      localStorage.setItem('bookingData', JSON.stringify(response.data.result));  
+      
+    })
+    .catch(error => {
+      console.error('Error making POST request:', error);
+      // Handle error if needed
+    });
+  };
+
+  const convertResponseToBookings = (responseData) => {
+    return responseData.map(item => ({
+      id: item[0],
+      hotelName: `${(HotelRoomDetail.find(room => room.pid === item[1])).name}`, // Adjust as per your requirement
+      city: `${(HotelRoomDetail.find(room => room.pid === item[1])).city}`,
+      bookingDate: new Date(item[4]).toISOString().split('T')[0],
+      checkInDate: new Date(item[5]).toISOString().split('T')[0], // Format to YYYY-MM-DD
+      checkOutDate: new Date(item[6]).toISOString().split('T')[0], // Format to YYYY-MM-DD
+      guestCount: item[7], // Assuming guest count is at index 7
+      amount: `$${item[8]}`, // Assuming amount is at index 8
+      status: item[9] === 1 ? 'Cancelled' : 'Confirmed', // Assuming status is at index 9 (0 or 1)
+      // Example details
+    }));
+  };
+
+  const showLoginExpiredPopup = () => {
+    // Handle login expiration
+    alert('Login expired. Redirecting to home page.');
+    localStorage.clear();
+    navigate('/');
+  };
+
   const isDatePassed = (dateString) => {
     const currentDate = new Date();
     const checkDate = new Date(dateString);
-    return checkDate < currentDate;
+    return currentDate > checkDate; // Compare if current date is greater than check-in date
   };
 
-  // Separate bookings into upcoming and previous based on check-in date
   const upcomingBookings = bookings.filter((booking) => !isDatePassed(booking.checkInDate));
   const previousBookings = bookings.filter((booking) => isDatePassed(booking.checkInDate));
 
-  // Function to handle cancel booking
+  const handleBookingClick = (id) => {
+    if (expandedBookingId === id) {
+      setExpandedBookingId(null);
+    } else {
+      setExpandedBookingId(id);
+    }
+  };
+
   const handleCancelBooking = (bookingId) => {
-    setCancelBookingId(bookingId); // Set the booking ID to prompt for cancellation confirmation
+    setCancelBookingId(bookingId);
   };
 
-  // Function to confirm cancellation
   const confirmCancelBooking = () => {
-    // Logic to cancel the booking goes here
     console.log(`Cancel booking with ID ${cancelBookingId}`);
-    // You can implement your cancellation logic here, e.g., making an API call
+  const apiUrl = 'http://localhost:5000/cancellation';
+  const accessToken = localStorage.getItem('token');
 
-    setCancelBookingId(null); // Reset cancelBookingId after cancellation
+  axios.post(apiUrl, { bid: cancelBookingId }, {
+    headers: {
+      'Authorization': `Bearer ${accessToken}`,
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(response => {
+    console.log('Cancellation request successful:', response.data);
+    // Optionally update state or perform other actions upon successful cancellation
+    // For example, update bookings state to reflect the cancellation
+    // Reload or update bookings from server
+    window.location.reload();// Reload bookings after cancellation
+  })
+  .catch(error => {
+    console.error('Error making cancellation request:', error);
+    // Handle cancellation request error if needed
+  });
+
+  setCancelBookingId(null); // Close the dialog
+
   };
 
-  // Function to close cancel confirmation dialog
   const handleCloseCancelDialog = () => {
-    setCancelBookingId(null); // Reset cancelBookingId on dialog close
+    setCancelBookingId(null);
   };
 
   return (
     <div>
-
-      <Container maxWidth="sm"> {/* Center the content */}
+      <Container maxWidth="sm">
         <Paper elevation={3} className="profile-container">
           <Typography variant="h4" gutterBottom>
             Welcome, {user.name}!
           </Typography>
-          {/* Profile information */}
           <div className="profile-info">
             <Typography variant="body1" gutterBottom>
               <strong>Email:</strong> {user.email}
@@ -105,23 +182,23 @@ const Profile = () => {
             <Typography variant="body1" gutterBottom>
               <strong>Address:</strong> {user.addr}
             </Typography>
-            {/* Other user details */}
           </div>
 
-          {/* Hotel bookings section */}
           <div className="booking-section">
             <Typography variant="h5" gutterBottom>
               Upcoming Bookings
             </Typography>
             <div className="booking-history">
-              {/* Display upcoming booking history */}
               {upcomingBookings.map((booking) => (
                 <div key={booking.id}
                   className={`booking-card ${expandedBookingId === booking.id ? 'expanded' : ''}`}
                   onClick={() => handleBookingClick(booking.id)}
                 >
                   <Typography variant="body1" gutterBottom>
-                    <strong>Hotel Name:</strong> {booking.hotelName}
+                    <strong>Hotel Name:</strong> {booking.hotelName} <strong>-</strong> {booking.city}
+                  </Typography>
+                  <Typography variant="body1" gutterBottom>
+                    <strong>Booking Date:</strong> {booking.bookingDate}
                   </Typography>
                   <Typography variant="body1" gutterBottom>
                     <strong>Check-in:</strong> {booking.checkInDate} - <strong>Check-out:</strong> {booking.checkOutDate}
@@ -140,13 +217,11 @@ const Profile = () => {
                       <Typography variant="body1">
                         {booking.details}
                       </Typography>
-                      <Button
-                        variant="contained"
-                        color="error"
-                        onClick={() => handleCancelBooking(booking.id)}
-                      >
+                      {booking.status === 'Confirmed' && (
+                      <Button variant="contained"color="error"onClick={() => handleCancelBooking(booking.id)}>
                         Cancel Booking
                       </Button>
+                      )}
                     </div>
                   )}
                 </div>
@@ -157,14 +232,16 @@ const Profile = () => {
               Previous Bookings
             </Typography>
             <div className="booking-history">
-              {/* Display previous booking history */}
               {previousBookings.map((booking) => (
                 <div key={booking.id}
                   className={`booking-card ${expandedBookingId === booking.id ? 'expanded' : ''}`}
                   onClick={() => handleBookingClick(booking.id)}
                 >
                   <Typography variant="body1" gutterBottom>
-                    <strong>Hotel Name:</strong> {booking.hotelName}
+                    <strong>Hotel Name:</strong> {booking.hotelName} <strong>-</strong> {booking.city}
+                  </Typography>
+                  <Typography variant="body1" gutterBottom>
+                    <strong>Booking Date:</strong> {booking.bookingDate}
                   </Typography>
                   <Typography variant="body1" gutterBottom>
                     <strong>Check-in:</strong> {booking.checkInDate} - <strong>Check-out:</strong> {booking.checkOutDate}
@@ -191,7 +268,6 @@ const Profile = () => {
           </div>
         </Paper>
 
-        {/* Dialog for cancellation confirmation */}
         <Dialog open={cancelBookingId !== null} onClose={handleCloseCancelDialog}>
           <DialogTitle>Confirm Cancellation</DialogTitle>
           <DialogContent>

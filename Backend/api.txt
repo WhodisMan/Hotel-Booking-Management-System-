@@ -21,7 +21,7 @@ curl -X POST -H "Content-Type: application/json" -d "{\"city\":\"Delhi\"}" http:
 curl -X POST -H "Content-Type: application/json" -d "{\"hotel_id\":\"16560\"}" http://localhost:8080/hotel
 {"info":[["1",34],["2",34],["3",20],["4",7]],"reviews":[[1,16560,1,4,"GOOd"]]}
 
-curl.exe -X POST -H "Authorization: Bearer {TOKEN}" -H "Content-Type: application/json" -d "{\"uid\":\"1\"}" http://localhost:8080/bookings
+curl.exe -X POST -H "Authorization: Bearer {TOKEN}" -H "Content-Type: application/json" -d "{\"uid\":\"1\"}" http://localhost:5000/bookings
 
 **booking a room
 curl -X POST -H "Authorization: Bearer {TOKEN}" -H "Content-Type: application/json" -d '{"pid":"16560","uid":"1","r_cat":"3","checkin":"2024/06/04","checkout":"2024/06/06","g_count":"4","amount":5400}' http://localhost:5000/book
@@ -33,6 +33,8 @@ SELECT * FROM BOOKING_STAT WHERE PROPERTY_ID=16560;
 
 **cancel a booking uid bid(record id)
 curl.exe -X POST -H "Authorization: Bearer {TOKEN}" -H "Content-Type: application/json" -d "{\"bid\":\"5\"}" http://localhost:8080/cancellation
+
+curl.exe -X POST -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcyMTgzOTgzNiwianRpIjoiOWE4M2Q2ODYtZDhiNC00NjA5LWI1ZGItOGI5MDQzMmY3YmU3IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTMsIm5iZiI6MTcyMTgzOTgzNiwiY3NyZiI6IjY1OWEyNjFkLWU1ZjUtNDYxMC05NWM2LWZhYjBkYmYzY2YxMSIsImV4cCI6MTcyMTg0MzQzNn0.Nuad-YFboNv5Q-DFvXWAavQ7iehaxhI2LD9Zca5eUb4" -H "Content-Type: application/json" -d "{\"bid\":\"27\"}" http://localhost:5000/cancellation
 **to check:
 select * from RECORDS;
 SELECT * FROM BOOKING_STAT WHERE PROPERTY_ID=16560;
