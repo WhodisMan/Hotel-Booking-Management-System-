@@ -3,23 +3,31 @@ import { Grid, Paper, Typography, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { HotelRoomDetail } from '../Detail/HotelDetail';
 
 const PaperContainer = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
+  textAlign: 'left', // Align text to the left
+  color: theme.palette.text.primary, // Use primary text color
+  backgroundColor: theme.palette.background.default, // Use default background color
 }));
 
 const ButtonContainer = styled(Button)(({ theme }) => ({
   marginTop: theme.spacing(2),
 }));
 
+const RoomContainer = styled(Grid)(({ theme }) => ({
+  marginBottom: theme.spacing(2), // Adds margin-bottom to each room detail
+}));
+
 const PageContainer = styled('div')({
   margin: '20px', // Adjust as needed
+  marginBottom: '50px', // Increase bottom margin
 });
 
 const HomeMan = () => {
   const [pid, setPid] = useState(null);
+  const [filteredRooms, setFilteredRooms] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem('token'); // Get token from localStorage
@@ -28,7 +36,7 @@ const HomeMan = () => {
     if (!pid && token && !storedPid) { // Check if pid is not set and there's no stored pid in localStorage
       axios.get('http://localhost:5000/protected', {
         headers: {
-          'Authorization': `Bearer ${token}`,
+          'Authorization': `Bearer ${token}`, // Corrected the template literal
         }
       })
       .then(response => {
@@ -42,19 +50,37 @@ const HomeMan = () => {
       // If pid is already set or stored in localStorage, use it
       setPid(storedPid);
     }
+
+    // Filtering hotel room details based on pid
+    const filtered = HotelRoomDetail.filter(room => room.pid === parseInt(storedPid));
+    setFilteredRooms(filtered);
   }, [pid]); // Add pid to the dependency array
 
   return (
-    <div className="container m-auto"> {/* Ensure this container class matches with your header */}
+    <div className="container m-auto">
       <PageContainer>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="h3" gutterBottom>
           Welcome to ATLIQ
         </Typography>
+        {/* Display filtered rooms */}
+        {filteredRooms.map(room => (
+          <RoomContainer key={room.id} item xs={12}>
+            <PaperContainer>
+              <Typography variant="h5">{room.name}</Typography>
+              <Typography variant="h6" style={{ marginBottom: '10px' }}>{room.city}</Typography>
+              <Typography variant="body1">{room.description}</Typography>
+              <Typography variant="body1">{room.category}</Typography>
+              {/* Add more details as needed */}
+            </PaperContainer>
+
+          </RoomContainer>
+        ))}
+
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={4}>
             <PaperContainer>
-              <Typography variant="h6">Dashboard</Typography>
-              <Typography variant="body2">
+              <Typography variant="h5">Dashboard</Typography>
+              <Typography variant="body1">
                 View your hotel’s overall performance metrics.
               </Typography>
               <ButtonContainer
@@ -69,8 +95,8 @@ const HomeMan = () => {
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
             <PaperContainer>
-              <Typography variant="h6">Rooms</Typography>
-              <Typography variant="body2">
+              <Typography variant="h5">Rooms</Typography>
+              <Typography variant="body1">
                 Manage room availability and details.
               </Typography>
               <ButtonContainer
@@ -85,8 +111,8 @@ const HomeMan = () => {
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
             <PaperContainer>
-              <Typography variant="h6">Bookings</Typography>
-              <Typography variant="body2">
+              <Typography variant="h5">Bookings</Typography>
+              <Typography variant="body1">
                 View and manage current bookings.
               </Typography>
               <ButtonContainer
