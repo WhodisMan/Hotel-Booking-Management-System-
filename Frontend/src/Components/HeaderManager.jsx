@@ -37,16 +37,12 @@ const HeaderUser = () => {
     <>
       <div className="flex justify-between items-center p-4 pt-8 container m-auto">
         <div className={`hidden md:flex space-x-4 ${isMenu ? "block" : "hidden"}`}>
-          <Link to={"/"}>
+          <Link to={"/HomeMan"}>
             <Button variant="contained" color="primary" sx={{ textTransform: 'uppercase', fontWeight: 'normal' }}>
               Home
             </Button>
           </Link>
-          <Link to={"/CategoryPage"}>
-            <Button variant="contained" color="primary" sx={{ textTransform: 'uppercase', fontWeight: 'normal' }}>
-              Category
-            </Button>
-          </Link>
+        
           <Link to={"/About"}>
             <Button variant="contained" color="primary" sx={{ textTransform: 'uppercase', fontWeight: 'normal' }}>
               About
@@ -54,16 +50,12 @@ const HeaderUser = () => {
           </Link>
         </div>
         <div className="w-20 md:w-30 mx-auto">
-          <Link to={'/'}>
+          <Link to={'/HomeMan'}>
             <img src={logo} alt="logo" />
           </Link>
         </div>
         <div className="hidden md:flex space-x-4">
-          <Link to={"/Profile"}>
-            <Button variant="contained" color="primary" sx={{ textTransform: 'uppercase', fontWeight: 'normal' }}>
-              Profile
-            </Button>
-          </Link>
+          
           <Button variant="contained" color="secondary" onClick={handleLogout}>
             Logout
           </Button>

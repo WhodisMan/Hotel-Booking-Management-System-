@@ -54,6 +54,7 @@ const HomeMan = () => {
     // Filtering hotel room details based on pid
     const filtered = HotelRoomDetail.filter(room => room.pid === parseInt(storedPid));
     setFilteredRooms(filtered);
+    localStorage.setItem("HotelDetails",JSON.stringify(filtered));
   }, [pid]); // Add pid to the dependency array
 
   return (
