@@ -1,36 +1,49 @@
-
-import React from 'react';
-import { Grid, Paper, Typography } from '@mui/material';
-import './Dashboard.css';
+import React, { useState, useEffect } from 'react';
+import { Grid, Paper, Typography, Button } from '@mui/material';
+import { styled } from '@mui/material/styles';
 import axios from 'axios';
-import { useStyles } from "@material-ui/core/styles";
-import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import './Dashboard.css';
+
+// Styled components for Paper and Typography
+const ChartContainer = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(2),
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+  height: '100%',
+}));
+
+const ChartTitle = styled(Typography)(({ theme }) => ({
+  marginBottom: theme.spacing(2),
+}));
 
 function Dashboard() {
-    const classes = useStyles();
-    const [data, setData] = useState([]);
-    const [roomOccupancy, setRoomOccupancy] = useState([]);
+  const [data, setData] = useState([]);
+  const [roomOccupancy, setRoomOccupancy] = useState([]);
+  const [pid, setPid] = useState(null); // State to store the PID
 
-    useEffect(() => {
-        // Fetch data from the API
-        axios.get('/api/bookings')
-          .then(response => setData(response.data))
-          .catch(error => console.error('Error fetching bookings data:', error));
-    
-        axios.get('/api/roomOccupancy')
-          .then(response => setRoomOccupancy(response.data))
-          .catch(error => console.error('Error fetching room occupancy data:', error));
-      }, []);
+
 
   return (
     <div className="dashboard-container">
+      {/* Back Button */}
+      <Button
+        component={Link}
+        to="/HomeMan"
+        variant="outlined"
+        color="primary"
+        style={{ marginBottom: '20px' }}
+      >
+        Back
+      </Button>
+
       <Grid container spacing={3}>
         {/* Bookings Bar Chart */}
         <Grid item xs={12} md={6}>
-          <Paper className="chart-container">
-            <Typography variant="h6" className="chart-title">
+          <ChartContainer>
+            <ChartTitle variant="h6">
               Monthly Bookings
-            </Typography>
+            </ChartTitle>
             <div className="bar-chart">
               {data.map((item) => (
                 <div
@@ -41,15 +54,15 @@ function Dashboard() {
                 ></div>
               ))}
             </div>
-          </Paper>
+          </ChartContainer>
         </Grid>
 
         {/* Revenue Bar Chart */}
         <Grid item xs={12} md={6}>
-          <Paper className="chart-container">
-            <Typography variant="h6" className="chart-title">
+          <ChartContainer>
+            <ChartTitle variant="h6">
               Monthly Revenue
-            </Typography>
+            </ChartTitle>
             <div className="bar-chart">
               {data.map((item) => (
                 <div
@@ -60,23 +73,25 @@ function Dashboard() {
                 ></div>
               ))}
             </div>
-          </Paper>
+          </ChartContainer>
         </Grid>
 
         {/* Room Occupancy Pie Chart */}
         <Grid item xs={12} md={6}>
-          <Paper className="chart-container">
-            <Typography variant="h6" className="chart-title">
+          <ChartContainer>
+            <ChartTitle variant="h6">
               Room Occupancy
-            </Typography>
+            </ChartTitle>
             <div className="pie-chart">
               <div className="pie-labels">
                 <div>Available: 60%</div>
                 <div>Occupied: 40%</div>
               </div>
             </div>
-          </Paper>
+          </ChartContainer>
         </Grid>
+
+        
       </Grid>
     </div>
   );

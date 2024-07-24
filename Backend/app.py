@@ -3,15 +3,17 @@ from flask_jwt_extended import JWTManager, create_access_token, jwt_required, ge
 from flask_jwt_extended.exceptions import NoAuthorizationError
 from flask_mysqldb import MySQL
 from flask_cors import CORS
-from datetime import datetime
+from datetime import timedelta
 import requests
 import json
+
 
 app = Flask(__name__)
 CORS(app)
 
 app.config["DEBUG"] = True
 app.config['JWT_SECRET_KEY'] = 'your_secret_key_here'
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
 jwt = JWTManager(app)
 
 db_ip = '3.25.100.176'
@@ -136,6 +138,22 @@ def book_room():
 @app.errorhandler(NoAuthorizationError)
 def handlerror(ex):
     return jsonify({'MSG':"NOT AUTHENTICATED"})
+
+#get booking records of a user
+@app.route('/bookings', methods=['POST'])
+@jwt_required()
+def recFetch():
+    data=request.json
+    if not data:
+        return jsonify({'message': 'data is missing'})
+    try:
+        cursor = mysql.connection.cursor()
+        cursor.execute("call get_bookings(%s)"%data["uid"])
+        res = cursor.fetchall()
+        cursor.close()
+    except Exception as e:
+        return jsonify({'error': str(e)})
+    return jsonify({'result':res})
 
 #cancel a booking after verifying jwt token
 @app.route('/cancellation', methods=['POST'])

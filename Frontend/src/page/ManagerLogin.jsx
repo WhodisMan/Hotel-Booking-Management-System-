@@ -17,10 +17,9 @@ const ManagerLogin = () => {
       .then((response) => {
         console.log(response);
         if (response.data.access_token) {
-          alert('Logged in successfully');
           localStorage.setItem('token', response.data.access_token);
           localStorage.setItem('UserType', 'manager'); // Set UserType as manager
-          window.location.href = '/'; // Redirect to home page
+          window.location.href = '/HomeMan'; // Redirect to home page
         } else {
           alert('Invalid username or password');
         }

@@ -2,7 +2,7 @@ const APP_USER_STORAGE = 'HOTEL-USER-STORAGE';
 const APP_ACCESS_TOKEN = 'HOTEL-ACCESS-TOKEN';
 
 export const getSessionUser = () => {
-    const userStr = localStorage.getItem(APP_USER_STORAGE);
+    const userStr = localStorage.getItem('UserType');
   
     if (userStr) {
       return JSON.parse(userStr);
@@ -11,7 +11,7 @@ export const getSessionUser = () => {
   };
 
   export const getSessionToken = () => {
-    const tokenStr = localStorage.getItem(APP_ACCESS_TOKEN);
+    const tokenStr = localStorage.getItem('token');
   
     if (tokenStr) {
       return tokenStr;

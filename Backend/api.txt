@@ -3,7 +3,7 @@ curl -X POST -H "Content-Type:application/json" -d '{"username":"test","password
 curl -X POST -H "Content-Type:application/json" -d "{\"username\":\"test\",\"password\":\"password\"}" http://3.104.1.190:8080/login
 
 **getting restricted content
-curl -X GET -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcyMTc1Nzg4OCwianRpIjoiOTFjZGViZmEtZjk0Yy00YTU5LWI0ZDktNGJjZGFiMGMyNzNhIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTMsIm5iZiI6MTcyMTc1Nzg4OCwiY3NyZiI6IjJmNTYzNjQ5LTQwZGYtNDE5YS1hODhhLTMzMDJjZjgyMzAwYSIsImV4cCI6MTcyMTc1ODc4OH0.YA6AyXZFRMDTo7KCjnoETZ67kJsxNwMQjgtKfuR0fvQ" http://localhost:5000/protected
+curl -X GET -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcyMTgyODAzOSwianRpIjoiNGVmNDcwZGEtYjRkMi00ODAyLTg0OWYtYWU0NWM3ZWJkMGM3IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTY1NjIsIm5iZiI6MTcyMTgyODAzOSwiY3NyZiI6ImY3YWEzZmQ5LWE2N2EtNDUzYy04NDhmLWJiODAzODRjYzAyNiIsImV4cCI6MTcyMTgzMTYzOX0.RjuRcDajHaVTK48IbZrWm8FUv7k0S1vVUM8_VAcErzc" http://localhost:5000/protected
 curl -X GET -H "Authorization: Bearer {TOKEN}" http://3.104.1.190:8080/protected
 ─$ curl -X GET http://3.104.1.190:8080/protected
 
@@ -21,6 +21,7 @@ curl -X POST -H "Content-Type: application/json" -d "{\"city\":\"Delhi\"}" http:
 curl -X POST -H "Content-Type: application/json" -d "{\"hotel_id\":\"16560\"}" http://localhost:8080/hotel
 {"info":[["1",34],["2",34],["3",20],["4",7]],"reviews":[[1,16560,1,4,"GOOd"]]}
 
+curl.exe -X POST -H "Authorization: Bearer {TOKEN}" -H "Content-Type: application/json" -d "{\"uid\":\"1\"}" http://localhost:8080/bookings
 
 **booking a room
 curl -X POST -H "Authorization: Bearer {TOKEN}" -H "Content-Type: application/json" -d '{"pid":"16560","uid":"1","r_cat":"3","checkin":"2024/06/04","checkout":"2024/06/06","g_count":"4","amount":5400}' http://localhost:5000/book
