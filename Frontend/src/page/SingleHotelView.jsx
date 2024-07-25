@@ -118,17 +118,36 @@ const SingleHotelView = () => {
       setError("Please fill in all fields.");
       return;
     }
-
-    if (new Date(checkInDate) >= new Date(checkOutDate)) {
-      setError("Check-out date must be after check-in date.");
+  
+    // Convert dates to Date objects for comparison
+    const today = new Date();
+    const checkIn = new Date(checkInDate);
+    const checkOut = new Date(checkOutDate);
+  
+    // Set hours, minutes, seconds, and milliseconds of today's date to 0 for accurate comparison
+    today.setHours(0, 0, 0, 0);
+  
+    // Check if checkInDate is not before today's date
+    if (checkIn.getTime() < today.getTime()) {
+      setError("Check-in date must be today or a future date.");
       return;
     }
-
+  
+    // Calculate number of days between checkIn and checkOut
+    const timeDifference = checkOut.getTime() - checkIn.getTime();
+    const numDays = timeDifference / (1000 * 3600 * 24);
+  
+    // Check if number of days is greater than or equal to 1
+    if (numDays < 1) {
+      setError("Minimum stay duration is 1 day.");
+      return;
+    }
+  
     if (numGuests < 1) {
       setError("Number of guests must be greater than or equal to 1.");
       return;
     }
-
+  
     // Perform booking confirmation logic here
     console.log("Booking confirmed:", {
       roomType: selectedRoomType,
@@ -143,11 +162,12 @@ const SingleHotelView = () => {
       checkOutDate,
       numGuests,
     }));
-
-
+  
     closeModal();
     navigate('/PaymentPage');
   };
+  
+  
 
   return (
     <div>
