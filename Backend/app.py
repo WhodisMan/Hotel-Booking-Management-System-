@@ -272,8 +272,7 @@ def updateCount():
     data=request.json
     if not data:
         return jsonify({'message': 'data is missing'})
-    if current_user not in res[0] or current_user != int(data["pid"]):
-        return jsonify({"msg":"You are not The manager for this hotel"})
+
     try:
         cursor = mysql.connection.cursor()
         cursor.execute("call room_count_update(%s,%s,%s)",(data["pid"],data["cat"],data["num"]))
@@ -328,8 +327,7 @@ def fetchRec():
     data=request.json
     if not data:
         return jsonify({'message': 'data is missing'})
-    if current_user not in res[0] or current_user != int(data["pid"]):
-        return jsonify({"msg":"You are not The manager for this hotel"})
+    
     try:
         cursor = mysql.connection.cursor()
         cursor.callproc("fetch_rec",(data["pid"],))
@@ -354,8 +352,7 @@ def predict():
     data=request.json
     if not data:
         return jsonify({'message': 'data is missing'})
-    if current_user not in res[0] or current_user != int(data["pid"]):
-        return jsonify({"msg":"You are not The manager for this hotel"})
+
     try:
         cursor = mysql.connection.cursor()
         cursor.callproc("ml_data",(data["rid"],))
