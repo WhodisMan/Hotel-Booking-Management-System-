@@ -172,6 +172,11 @@ function Dashboard() {
     { name: 'Booked Rooms', value: combinedData.reduce((acc, entry) => acc + entry.bookedRooms, 0) }
   ];
 
+  const pieChartData3 = [
+    { name: 'Cancelled', value: data.filter(i => i.cancelled === 1).length },
+    { name: 'Confirmed', value: data.filter(i => i.cancelled === 0).length }
+  ];
+
   // Colors for the pie chart segments
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
@@ -293,15 +298,44 @@ function Dashboard() {
         </Grid>
 
         <Grid item xs={12} md={6}>
-      <BarChart width={600} height={400} data={combinedData}>
-        <XAxis dataKey="category" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Bar dataKey="bookedRooms" stackId="stack" fill="#82ca9d" name="Booked Rooms" />
-        <Bar dataKey="availableRooms" stackId="stack" fill="#8884d8" name="Available Rooms" />
-      </BarChart>
-    </Grid>
+          <ChartContainer>
+          <ChartTitle variant="h6">
+              Room Availability
+            </ChartTitle>
+            <BarChart width={550} height={350} data={combinedData}>
+              <XAxis dataKey="category" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="bookedRooms" stackId="stack" fill="#82ca9d" name="Booked Rooms" />
+              <Bar dataKey="availableRooms" stackId="stack" fill="#8884d8" name="Available Rooms" />
+            </BarChart>
+          </ChartContainer>
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <ChartContainer>
+            <ChartTitle variant="h6">
+              Cancellations
+            </ChartTitle>
+            <PieChart width={300} height={300} style={{ marginBottom: '20px' }}>
+              <Pie
+                data={pieChartData3}
+                cx={150} // Center of the pie chart
+                cy={100} // Center of the pie chart
+                outerRadius={100}
+                fill="#8884d8"
+                dataKey="value"
+              >
+                {pieChartData3.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={index === 0 ? '#f94343' : COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Legend />
+              <Tooltip />
+            </PieChart>
+          </ChartContainer>
+        </Grid>
 
 
         
