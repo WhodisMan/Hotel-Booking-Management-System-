@@ -170,6 +170,16 @@ const handleSubmit = async () => {
     <>
       {/* Display hotel details */}
       <div className="container mx-auto p-4">
+        {/* Back Button */}
+      <Button
+        component={Link}
+        to="/HomeMan"
+        variant="outlined"
+        color="primary"
+        style={{ marginBottom: '20px' }}
+      >
+        Back
+      </Button>
         <div className="">
           {hotelDetails.map(detail => (
             <RoundedBox key={detail.id}>
