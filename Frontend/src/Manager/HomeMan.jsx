@@ -62,9 +62,9 @@ const HomeMan = () => {
     <header>
     <div className="container m-auto">
       <PageContainer>
-        <Typography variant="h3" gutterBottom>
-          Welcome to ATLIQ
-        </Typography>
+      <Typography variant="h3" gutterBottom style={{ color: 'white' }}>
+        Welcome to ATLIQ
+      </Typography>
         {/* Display filtered rooms */}
         {filteredRooms.map(room => (
           <RoomContainer key={room.id} item xs={12}>
