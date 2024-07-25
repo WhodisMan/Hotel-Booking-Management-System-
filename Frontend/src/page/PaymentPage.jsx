@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,Link } from 'react';
+import { Grid, Paper, Typography, Button } from '@mui/material';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -68,7 +69,6 @@ const PaymentPage = () => {
         alert('Login expired. Redirecting to home page.');
         localStorage.clear();
         navigate('/');
-        localStorage.clear(); // Clear local storage upon login expiry
     }
 
     const handleConfirmBooking = () => {
@@ -133,6 +133,13 @@ const PaymentPage = () => {
 
     return (
         <div className="container mt-5">
+            <div className="row mb-3">
+                <div className="col-1">
+                <Button variant="outlined" color="primary" onClick={() => navigate(-1)}>
+                    Back
+                </Button>
+                </div>
+            </div>
             <div className="row justify-content-center">
                 <div className="col-md-6">
                     <div className="card">
