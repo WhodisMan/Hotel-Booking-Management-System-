@@ -4,6 +4,7 @@ import { styled } from '@mui/material/styles';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { HotelRoomDetail } from '../Detail/HotelDetail';
+import './HomeMan.css';
 
 const PaperContainer = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -58,6 +59,7 @@ const HomeMan = () => {
   }, [pid]); // Add pid to the dependency array
 
   return (
+    <header>
     <div className="container m-auto">
       <PageContainer>
         <Typography variant="h3" gutterBottom>
@@ -129,6 +131,7 @@ const HomeMan = () => {
         </Grid>
       </PageContainer>
     </div>
+    </header>
   );
 };
 
