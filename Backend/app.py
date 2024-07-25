@@ -119,6 +119,23 @@ def rooms():
         return jsonify({'error': str(e)})
     return jsonify({'info':rooms,"reviews":reviews})
 
+
+#Fetch userinfo
+@app.route('/userInfo', methods=['POST'])
+@jwt_required()
+def usr_info():
+    data=request.json
+    if not data:
+        return jsonify({'message': 'data is missing'})
+    try:
+        cursor = mysql.connection.cursor()
+        cursor.execute("call fetch_usr(%s)"%data["uid"])
+        res = cursor.fetchall()
+        cursor.close()
+    except Exception as e:
+        return jsonify({'error': str(e)})
+    return jsonify({'res':res})
+
 #books a room after verifying jwt token
 @app.route('/book', methods=['POST'])
 @jwt_required()

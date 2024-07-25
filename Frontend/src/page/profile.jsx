@@ -14,12 +14,12 @@ import './Profile.css';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const user = {
-  name: 'John Doe',
-  email: 'john.doe@example.com',
-  username: 'johndoe123',
-  addr: '123 Main Street, Cityville',
-};
+// const user = {
+//   name: 'John Doe',
+//   email: 'john.doe@example.com',
+//   username: 'johndoe123',
+//   addr: '123 Main Street, Cityville',
+// };
 
 const Profile = () => {
   const [expandedBookingId, setExpandedBookingId] = useState(null);
@@ -28,6 +28,7 @@ const Profile = () => {
   const [uid, setUid] = useState(null);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const[user,setUser] = useState([]);
 
   useEffect(() => {
     fetchUid();
@@ -53,7 +54,9 @@ const Profile = () => {
     .then(response => {
         console.log('User ID retrieved:', response.data.logged_in_as);
         setUid(response.data.logged_in_as);
-        postUid(response.data.logged_in_as); // Call function to POST uid
+        getUserData(response.data.logged_in_as); 
+        getBookingData(response.data.logged_in_as);
+        
     })
     .catch(error => {
         console.error('Error fetching user ID:', error);
@@ -62,7 +65,7 @@ const Profile = () => {
     });
   };
 
-  const postUid = (uid) => {
+  const getBookingData = (uid) => {
     const apiUrl = 'http://localhost:5000/bookings';
     const accessToken = localStorage.getItem('token');
 
@@ -77,12 +80,35 @@ const Profile = () => {
 
       // Assuming response.data.result is the array of bookings data
       const newBookings = convertResponseToBookings(response.data.result);
-
-      // Update the bookings state
       setBookings(newBookings);
 
       // Store the bookings data in local storage
       localStorage.setItem('bookingData', JSON.stringify(response.data.result));  
+      
+    })
+    .catch(error => {
+      console.error('Error making POST request:', error);
+      // Handle error if needed
+    });
+  };
+
+  const getUserData = (uid) => {
+    const apiUrl = 'http://localhost:5000/userInfo';
+    const accessToken = localStorage.getItem('token');
+
+    axios.post(apiUrl, { uid }, {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => {
+      console.log('POST request successful:');
+      setUser(response.data.res[0]);
+
+
+
+      localStorage.setItem('userData', JSON.stringify(response.data.res));  
       
     })
     .catch(error => {
@@ -165,22 +191,23 @@ const Profile = () => {
     setCancelBookingId(null);
   };
 
+
   return (
     <div>
       <Container maxWidth="sm">
         <Paper elevation={3} className="profile-container">
           <Typography variant="h4" gutterBottom>
-            Welcome, {user.name}!
+            Welcome, {user[1]}!
           </Typography>
           <div className="profile-info">
             <Typography variant="body1" gutterBottom>
-              <strong>Email:</strong> {user.email}
+              <strong>Email:</strong> {user[4]}
             </Typography>
             <Typography variant="body1" gutterBottom>
-              <strong>Username:</strong> {user.username}
+              <strong>Username:</strong> {user[3]}
             </Typography>
             <Typography variant="body1" gutterBottom>
-              <strong>Address:</strong> {user.addr}
+              <strong>Address:</strong> {user[5]}
             </Typography>
           </div>
 

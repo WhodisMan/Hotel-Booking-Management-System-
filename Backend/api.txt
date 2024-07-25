@@ -21,6 +21,11 @@ curl -X POST -H "Content-Type: application/json" -d "{\"city\":\"Delhi\"}" http:
 curl -X POST -H "Content-Type: application/json" -d "{\"hotel_id\":\"16560\"}" http://localhost:8080/hotel
 {"info":[["1",34],["2",34],["3",20],["4",7]],"reviews":[[1,16560,1,4,"GOOd"]]}
 
+**get userinfo
+curl.exe -X POST -H "Authorization: Bearer {TOKEsN}" -H "Content-Type: application/json" -d "{\"uid\":11}" http://localhost:5000/userInfo
+curl.exe -X POST -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcyMTg3MDk4MSwianRpIjoiZjY0OGUzNzctMDdiZi00MjdjLThiODUtODJlNDc2MmVkZjBmIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTMsIm5iZiI6MTcyMTg3MDk4MSwiY3NyZiI6IjQ3NDJlNDdiLTJmOGMtNDA2Ni1iMWU1LTFhZDAzMjM1MjkwNiIsImV4cCI6MTcyMTg3NDU4MX0.svkbHMKUuoqH9b9dVd7CETBdm_MhZbp-u7Tig0vGpto" -H "Content-Type: application/json" -d "{\"uid\":11}" http://localhost:5000/userInfo
+
+**get booking history of user
 curl.exe -X POST -H "Authorization: Bearer {TOKEN}" -H "Content-Type: application/json" -d "{\"uid\":\"1\"}" http://localhost:5000/bookings
 
 **booking a room
@@ -54,6 +59,7 @@ curl.exe -X POST -H "Authorization: Bearer {TOKEN}" -H "Content-Type: applicatio
 
 ***fetch records for manager
 curl.exe -X POST -H "Authorization: Bearer {TOKEN}" -H "Content-Type: application/json" -d "{\"pid\":16560}" http://localhost:8080/mngr/fetchRec
+curl.exe -X POST -H "Authorization: Bearer {TOKEN}" -H "Content-Type: application/json" -d "{\"pid\":16562}" http://localhost:5000/mngr/fetchRec
 
 
 ***get prediction from available
