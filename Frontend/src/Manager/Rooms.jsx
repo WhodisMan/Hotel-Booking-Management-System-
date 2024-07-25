@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { Grid, Paper, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Grid, Paper, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import axios from 'axios'; // Import axios
 
@@ -12,6 +12,8 @@ const Rooms = () => {
   const [hotelDetails, setHotelDetails] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [editCount, setEditCount] = useState(0);
+  const [editCost, setEditCost] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -51,7 +53,6 @@ const Rooms = () => {
           category: property[4]
         }));
 
-        
         updateHotelDetailCounts(filteredProperties[0]);
       }
     } catch (error) {
@@ -97,6 +98,8 @@ const Rooms = () => {
   // Function to handle click on room card
   const handleRoomClick = (room) => {
     setSelectedRoom(room);
+    setEditCount(HotelDetail[`rt${room.type}_count`] || 0);
+    setEditCost(HotelDetail[`rt${room.type}_cost`] || 0);
     setOpenDialog(true); // Open the dialog
   };
 
@@ -104,6 +107,64 @@ const Rooms = () => {
   const handleCloseDialog = () => {
     setOpenDialog(false);
   };
+
+  // Function to handle count change
+  const handleCountChange = (event) => {
+    setEditCount(parseInt(event.target.value));
+  };
+
+  // Function to handle cost change
+  const handleCostChange = (event) => {
+    setEditCost(parseFloat(event.target.value));
+  };
+
+  // Function to handle submit
+// Function to handle submit
+const handleSubmit = async () => {
+  const accessToken = localStorage.getItem('token');
+  const PID = localStorage.getItem('pid');
+  if (selectedRoom) {
+    try {
+      // Update room count
+      const countResponse = await axios.post('http://localhost:5000/mngr/roomUpdate', {
+        pid: String(PID), // Replace with actual PID
+        cat: String(selectedRoom.type), // Assuming room type corresponds to 'cat' in API
+        num: String(editCount) // Assuming editCount is the updated count
+      }, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`, // Replace with actual authorization token
+          'Content-Type': 'application/json'
+        }
+      });
+
+      console.log('Room update response:', countResponse.data);
+
+      // Update room cost
+      const costResponse = await axios.post('http://localhost:5000/mngr/priceUpdate', {
+        pid: String(PID), // Replace with actual PID
+        cat: String(selectedRoom.type), // Assuming room type corresponds to 'cat' in API
+        price: String(editCost) // Assuming editCost is the updated cost
+      }, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`, // Replace with actual authorization token
+          'Content-Type': 'application/json'
+        }
+      });
+
+      console.log('Cost update response:', costResponse.data);
+
+      // Update local state or any other necessary state management
+      HotelDetail[`rt${selectedRoom.type}_count`] = editCount;
+      HotelDetail[`rt${selectedRoom.type}_cost`] = editCost;
+
+      setOpenDialog(false); // Close the dialog after submission
+    } catch (error) {
+      console.error('Error updating room:', error);
+      // Handle error appropriately
+    }
+  }
+};
+
 
   return (
     <>
@@ -146,12 +207,32 @@ const Rooms = () => {
             <DialogContent dividers>
               <Typography variant="body1">{selectedRoom.description}</Typography>
               <Typography variant="body1" style={{ marginTop: '8px', marginBottom: '8px' }}>Ideal for: {selectedRoom.idealfor}</Typography>
-              <Typography variant="body1">Count: {HotelDetail[`rt${selectedRoom.type}_count`]}</Typography>
-              <Typography variant="body1">Cost: ${HotelDetail[`rt${selectedRoom.type}_cost`] || '-'}</Typography>
+              {/* Editable fields for count and cost */}
+              <TextField
+                margin="dense"
+                id="count"
+                label="Count"
+                type="number"
+                fullWidth
+                value={editCount}
+                onChange={handleCountChange}
+              />
+              <TextField
+                margin="dense"
+                id="cost"
+                label="Cost"
+                type="number"
+                fullWidth
+                value={editCost}
+                onChange={handleCostChange}
+              />
             </DialogContent>
             <DialogActions>
               <Button onClick={handleCloseDialog} color="primary">
-                Close
+                Cancel
+              </Button>
+              <Button onClick={handleSubmit} color="primary">
+                Save
               </Button>
             </DialogActions>
           </>
