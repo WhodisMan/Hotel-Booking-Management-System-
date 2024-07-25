@@ -59,7 +59,7 @@ curl.exe -X POST -H "Authorization: Bearer {TOKEN}" -H "Content-Type: applicatio
 
 ***fetch records for manager
 curl.exe -X POST -H "Authorization: Bearer {TOKEN}" -H "Content-Type: application/json" -d "{\"pid\":16560}" http://localhost:8080/mngr/fetchRec
-curl.exe -X POST -H "Authorization: Bearer {TOKEN}" -H "Content-Type: application/json" -d "{\"pid\":16562}" http://localhost:5000/mngr/fetchRec
+curl.exe -X POST -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcyMTg3NjE4OSwianRpIjoiNGI3NzRjYzYtMDE4Mi00MDMwLWJkZTMtZTdiYzY3ZDY2NzdiIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTY1NjIsIm5iZiI6MTcyMTg3NjE4OSwiY3NyZiI6IjEyMDU5MzJhLTU5MWEtNDkyYy04OGY4LTNiYTU5NTg0ZTNlZCIsImV4cCI6MTcyMTg3OTc4OX0.uE9lVPe2l_k3HNIksZQn_YV6ZYBqmaXl9H4A2IhVnFg" -H "Content-Type: application/json" -d "{\"pid\":16562,\"uid\":2}" http://localhost:5000/mngr/fetchRec
 
 
 ***get prediction from available

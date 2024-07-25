@@ -13,6 +13,7 @@ import SingleHotelView from './page/SingleHotelView';
 import Profile from './page/Profile';
 import HomeMan from './Manager/HomeMan';
 import Dashboard from './Manager/Dashboard';
+import Rooms from './Manager/Rooms';
 import PaymentPage from './page/PaymentPage';
 import Header from './Components/Header';
 import HeaderUser from './Components/HeaderUser';
@@ -44,6 +45,7 @@ function App() {
           <Route path="/Register" element={<Register />} />
           <Route path="/Login" element={<Login />} />
           <Route path="/Dashboard" element={<Dashboard />} />
+          <Route path="/Rooms" element={<Rooms />} />
           <Route path="/ManagerRegister" element={<ManagerRegister />} />
           <Route path="/ManagerLogin" element={<ManagerLogin />} />
           <Route path="/HomeMan" element={<HomeMan />} />
