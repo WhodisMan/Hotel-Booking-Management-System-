@@ -191,8 +191,8 @@ const handleSubmit = async () => {
             {/* Display room count and cost from HotelDetail */}
             {hotelDetails.length > 0 && (
               <>
-                <p className="text-sm">Count: {HotelDetail[`rt${room.type}_count`]}</p>
-                <p className="text-sm">Cost: ${HotelDetail[`rt${room.type}_cost`] || '-'}</p>
+                <p className="text-sm">Total Room Count: {HotelDetail[`rt${room.type}_count`]}</p>
+                <p className="text-sm">Room Cost: ${HotelDetail[`rt${room.type}_cost`] || '-'}</p>
               </>
             )}
           </RoomCard>
@@ -211,7 +211,7 @@ const handleSubmit = async () => {
               <TextField
                 margin="dense"
                 id="count"
-                label="Count"
+                label="Toatal Room Count"
                 type="number"
                 fullWidth
                 value={editCount}
@@ -220,7 +220,7 @@ const handleSubmit = async () => {
               <TextField
                 margin="dense"
                 id="cost"
-                label="Cost"
+                label="Room Cost"
                 type="number"
                 fullWidth
                 value={editCost}
