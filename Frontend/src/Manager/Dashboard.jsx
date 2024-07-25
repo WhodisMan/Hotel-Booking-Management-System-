@@ -14,7 +14,7 @@ const ChartContainer = styled(Paper)(({ theme }) => ({
   height: '100%',
   display: 'flex',
   flexDirection: 'column',
-  alignItems: 'center', // Center align contents
+  alignItems: 'center',
 }));
 
 const RoundedBox = styled('div')(({ theme }) => ({
@@ -33,7 +33,7 @@ const ChartTitle = styled(Typography)(({ theme }) => ({
 function Dashboard() {
   const [data, setData] = useState([]);
   const [hotelDetails, setHotelDetails] = useState([]);
-  const [roomCategories, setRoomCategories] = useState([0, 0, 0, 0]); // Initialize as per room categories 1 to 4
+  const [roomCategories, setRoomCategories] = useState([0, 0, 0, 0]);
   const [availableRooms, setAvailableRooms] = useState([]);
   const [totalRooms, setTotalRooms] = useState([]);
   const [chartData, setChartData] = useState({
@@ -103,6 +103,8 @@ function Dashboard() {
 
         const filteredProperties = response.data.properties.filter(property => property[0] === parseInt(pid));
 
+        console.log('Fetched Hotel Details:', filteredProperties);
+
         if (filteredProperties.length > 0) {
           setTotalRooms([
             { category: 1, count: filteredProperties[0][4] },
@@ -110,6 +112,7 @@ function Dashboard() {
             { category: 3, count: filteredProperties[0][6] },
             { category: 4, count: filteredProperties[0][7] },
           ]);
+          setHotelDetails(filteredProperties); // Update this to set the fetched data
         }
       } catch (error) {
         console.error('Error fetching hotel details:', error);
@@ -149,7 +152,6 @@ function Dashboard() {
     fetchHotelInfo();
     if (storedHotelDetail[0]) {
       fetchHotelDetails(storedHotelDetail[0].city, localStorage.getItem('pid'));
-      console.log(hotelDetails);
     }
   }, []);
 
@@ -227,24 +229,20 @@ function Dashboard() {
           Back
         </Button>
         <div className="">
-          {hotelDetails && hotelDetails.map(detail => (
-            <RoundedBox key={detail.id}>
-              <Typography variant="h5">{detail.name}</Typography>
-              console.log(hotelDetails)
-              <Typography variant="h6" style={{ marginBottom: '10px' }}>{detail.city}</Typography>
-              <Typography variant="body1">{detail.description}</Typography>
-              <Typography variant="body1">{detail.category}</Typography>
+          {hotelDetails && hotelDetails.length > 0 && hotelDetails.map(detail => (
+            <RoundedBox key={detail[0]}> {/* Adjust the key based on your data structure */}
+              <Typography variant="h5">{detail[1]}</Typography> {/* Adjust properties based on your data structure */}
+              <Typography variant="h6" style={{ }}>{detail[3]}</Typography>
+           
             </RoundedBox>
           ))}
         </div>
       </div>
 
-
-
       <Grid container spacing={3}>
-      <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={6}>
           <ChartContainer>
-          <ChartTitle variant="h6">
+            <ChartTitle variant="h6">
               Room Availability
             </ChartTitle>
             <BarChart width={550} height={350} data={combinedData}>
