@@ -54,7 +54,7 @@ curl -X POST -H "Content-Type:application/json" -d "{\"username\":\"mngr1\",\"pa
 curl.exe -X POST -H "Authorization: Bearer {TOKEN}" -H "Content-Type: application/json" -d "{\"pid\":\"16560\",\"cat\":\"1\",\"num\":\"24\"}" http://localhost:8080/mngr/roomUpdate
 
 ***update the price of certain room catagory
-curl.exe -X POST -H "Authorization: Bearer {TOKEN}" -H "Content-Type: application/json" -d "{\"pid\":\"16560\",\"cat\":\"1\",\"price\":\"2400\"}" http://localhost:8080/mngr/priceUpdate
+curl.exe -X POST -H "Authorization: Bearer {TOKEN}" -H "Content-Type: application/json" -d "{\"pid\":\"16560\",\"cat\":\"1\",\"price\":\"2400\"}" http://localhost:5000/mngr/priceUpdate
 
 
 ***fetch records for manager

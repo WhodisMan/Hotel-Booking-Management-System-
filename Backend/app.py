@@ -299,8 +299,7 @@ def updatePrice():
     data=request.json
     if not data:
         return jsonify({'message': 'data is missing'})
-    if current_user not in res[0] or current_user != int(data["pid"]):
-        return jsonify({"msg":"You are not The manager for this hotel"})
+
     try:
         cursor = mysql.connection.cursor()
         cursor.execute("call room_price_update(%s,%s,%s)",(data["pid"],data["cat"],data["price"]))
