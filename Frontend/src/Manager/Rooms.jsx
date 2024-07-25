@@ -11,58 +11,65 @@ import { HotelDetail } from '../Detail/HotelDetail';
 const Rooms = () => {
   const [hotelDetails, setHotelDetails] = useState([]);
   const [selectedRoom, setSelectedRoom] = useState(null);
-  const [PID, setPID] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const storedPID = localStorage.getItem('pid');
-        if (storedPID) {
-          setPID(storedPID);
-        }
         const storedHotelDetails = JSON.parse(localStorage.getItem("HotelDetails")) || [];
         setHotelDetails(storedHotelDetails);
-        console.log(hotelDetails)
-        fetchHotelDetails(storedHotelDetails[0].city); // Fetch for the first hotel in the array
 
+        const storedPID = localStorage.getItem('pid');
+        if (storedPID) {
+          fetchHotelDetails(storedHotelDetails[0].city, storedPID); // Fetch details based on the first hotel in storedHotelDetails
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
         setHotelDetails([]); // Handle error state if needed
       }
     };
 
-    fetchData(); // Fetch hotel details from localStorage
+    fetchData();
   }, []); // Empty dependency array means this effect runs only once after the initial render
 
-  // Function to fetch hotel details by city name
-  const fetchHotelDetails = async (cityname) => {
+  // Function to fetch hotel details by city name and PID
+  const fetchHotelDetails = async (cityname, pid) => {
     try {
       const response = await axios.post('http://localhost:5000/city', {
         city: cityname
       });
 
-      const filteredProperties = response.data.properties.filter((property) => property[0] === parseInt(PID));
+      const filteredProperties = response.data.properties.filter((property) => property[0] === parseInt(pid));
 
       if (filteredProperties.length > 0) {
-        // Update hotelDetails state
-       // Assuming you want to update state with filteredProperties
+        const updatedHotelDetails = filteredProperties.map(property => ({
+          id: property[0],
+          name: property[1],
+          city: property[2],
+          description: property[3],
+          category: property[4]
+        }));
 
-        // Update HotelDetail variables (avoid direct mutation)
-        HotelDetail.rt1_count = filteredProperties[0][4];
-        HotelDetail.rt2_count = filteredProperties[0][5];
-        HotelDetail.rt3_count = filteredProperties[0][6];
-        HotelDetail.rt4_count = filteredProperties[0][7];
-
-        HotelDetail.rt1_cost = filteredProperties[0][8];
-        HotelDetail.rt2_cost = filteredProperties[0][9];
-        HotelDetail.rt3_cost = filteredProperties[0][10];
-        HotelDetail.rt4_cost = filteredProperties[0][11];
+        
+        updateHotelDetailCounts(filteredProperties[0]);
       }
     } catch (error) {
       console.error('Error fetching hotel details:', error);
     }
+  };
+
+  // Function to update HotelDetail counts and costs
+  const updateHotelDetailCounts = (property) => {
+    HotelDetail.rt1_count = property[4];
+    HotelDetail.rt2_count = property[5];
+    HotelDetail.rt3_count = property[6];
+    HotelDetail.rt4_count = property[7];
+
+    HotelDetail.rt1_cost = property[8];
+    HotelDetail.rt2_cost = property[9];
+    HotelDetail.rt3_cost = property[10];
+    HotelDetail.rt4_cost = property[11];
   };
 
   // Style the Paper component for hotel details
@@ -124,7 +131,7 @@ const Rooms = () => {
             {hotelDetails.length > 0 && (
               <>
                 <p className="text-sm">Count: {HotelDetail[`rt${room.type}_count`]}</p>
-                <p className="text-sm">Cost: ${HotelDetail[`rt${room.type}_cost`]} per night</p>
+                <p className="text-sm">Cost: ${HotelDetail[`rt${room.type}_cost`] || '-'}</p>
               </>
             )}
           </RoomCard>
@@ -140,7 +147,7 @@ const Rooms = () => {
               <Typography variant="body1">{selectedRoom.description}</Typography>
               <Typography variant="body1" style={{ marginTop: '8px', marginBottom: '8px' }}>Ideal for: {selectedRoom.idealfor}</Typography>
               <Typography variant="body1">Count: {HotelDetail[`rt${selectedRoom.type}_count`]}</Typography>
-              <Typography variant="body1">Cost: ${HotelDetail[`rt${selectedRoom.type}_cost`]} per night</Typography>
+              <Typography variant="body1">Cost: ${HotelDetail[`rt${selectedRoom.type}_cost`] || '-'}</Typography>
             </DialogContent>
             <DialogActions>
               <Button onClick={handleCloseDialog} color="primary">
