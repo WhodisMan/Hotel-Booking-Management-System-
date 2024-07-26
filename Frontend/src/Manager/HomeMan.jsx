@@ -122,7 +122,7 @@ const HomeMan = () => {
                 variant="contained"
                 color="primary"
                 component={Link}
-                to="/bookings"
+                to="/Booking"
               >
                 Manage Bookings
               </ButtonContainer>
