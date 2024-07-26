@@ -197,7 +197,7 @@ const Rooms = () => {
             <Button
               component={Link}
               to="/HomeMan"
-              variant="outlined"
+              variant="contained"
               color="primary"
               style={{ marginBottom: '20px' }}
             >

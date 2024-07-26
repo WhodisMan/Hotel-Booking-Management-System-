@@ -246,12 +246,13 @@ function Dashboard() {
   }
 
   return (
+    <div className='header'>
     <div className="container mx-auto p-4">
       <div className="" style={{ marginBottom: '10px' }}>
         <Button
           component={Link}
           to="/HomeMan"
-          variant="outlined"
+          variant="contained"
           color="primary"
           style={{ marginBottom: '20px' }}
         >
@@ -352,6 +353,7 @@ function Dashboard() {
           </ChartContainer>
         </Grid>
       </Grid>
+    </div>
     </div>
   );
 }
