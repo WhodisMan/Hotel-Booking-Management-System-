@@ -9,8 +9,7 @@ export function HeroSection() {
             Discover amazing Hotels and Enjoy a <span className='text-[#0B8185] capitalize'>memorable stay in ATLIQ</span>
           </h1>
           <p className="mt-8 text-lg">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur modi blanditiis
-            dolores quasi eaque explicabo!
+          Explore a curated selection of top hotels with unparalleled amenities and seamless booking experiences. Find the perfect stay that suits your needs and enjoy exceptional service every step of the way.
           </p>
         </div>
         <div className="relative lg:col-span-5 lg:-mr-8 xl:col-span-6">

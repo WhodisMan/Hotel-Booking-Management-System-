@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Grid, Paper, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import axios from 'axios'; // Import axios
+import Loader from '../Components/Loader';
 
 // Sample data for RoomDetail and HotelDetail
 import { RoomDetail } from "../Detail/RoomDetail";
@@ -14,21 +15,26 @@ const Rooms = () => {
   const [openDialog, setOpenDialog] = useState(false);
   const [editCount, setEditCount] = useState(0);
   const [editCost, setEditCost] = useState(0);
+  const [loading, setLoading] = useState(true); // Add a loading state
+  const [error, setError] = useState(null); // Add an error state
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true); // Start loading
       try {
         const storedHotelDetails = JSON.parse(localStorage.getItem("HotelDetails")) || [];
         setHotelDetails(storedHotelDetails);
 
         const storedPID = localStorage.getItem('pid');
         if (storedPID) {
-          fetchHotelDetails(storedHotelDetails[0].city, storedPID); // Fetch details based on the first hotel in storedHotelDetails
+          await fetchHotelDetails(storedHotelDetails[0]?.city, storedPID); // Fetch details based on the first hotel in storedHotelDetails
         }
       } catch (error) {
         console.error("Error fetching data:", error);
-        setHotelDetails([]); // Handle error state if needed
+        setError("Failed to load data."); // Set error message
+      } finally {
+        setLoading(false); // Stop loading
       }
     };
 
@@ -54,6 +60,7 @@ const Rooms = () => {
         }));
 
         updateHotelDetailCounts(filteredProperties[0]);
+        setHotelDetails(updatedHotelDetails); // Update state with fetched details
       }
     } catch (error) {
       console.error('Error fetching hotel details:', error);
@@ -120,143 +127,148 @@ const Rooms = () => {
   };
 
   // Function to handle submit
-// Function to handle submit
-const handleSubmit = async () => {
-  const accessToken = localStorage.getItem('token');
-  const PID = localStorage.getItem('pid');
-  if (selectedRoom) {
-    try {
-      // Update room count
-      const countResponse = await axios.post('http://localhost:5000/mngr/roomUpdate', {
-        pid: String(PID), // Replace with actual PID
-        cat: String(selectedRoom.type), // Assuming room type corresponds to 'cat' in API
-        num: String(editCount) // Assuming editCount is the updated count
-      }, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`, // Replace with actual authorization token
-          'Content-Type': 'application/json'
-        }
-      });
+  const handleSubmit = async () => {
+    const accessToken = localStorage.getItem('token');
+    const PID = localStorage.getItem('pid');
+    if (selectedRoom) {
+      try {
+        // Update room count
+        const countResponse = await axios.post('http://localhost:5000/mngr/roomUpdate', {
+          pid: String(PID),
+          cat: String(selectedRoom.type),
+          num: String(editCount)
+        }, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+          }
+        });
 
-      console.log('Room update response:', countResponse.data);
+        console.log('Room update response:', countResponse.data);
 
-      // Update room cost
-      const costResponse = await axios.post('http://localhost:5000/mngr/priceUpdate', {
-        pid: String(PID), // Replace with actual PID
-        cat: String(selectedRoom.type), // Assuming room type corresponds to 'cat' in API
-        price: String(editCost) // Assuming editCost is the updated cost
-      }, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`, // Replace with actual authorization token
-          'Content-Type': 'application/json'
-        }
-      });
+        // Update room cost
+        const costResponse = await axios.post('http://localhost:5000/mngr/priceUpdate', {
+          pid: String(PID),
+          cat: String(selectedRoom.type),
+          price: String(editCost)
+        }, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+          }
+        });
 
-      console.log('Cost update response:', costResponse.data);
+        console.log('Cost update response:', costResponse.data);
 
-      // Update local state or any other necessary state management
-      HotelDetail[`rt${selectedRoom.type}_count`] = editCount;
-      HotelDetail[`rt${selectedRoom.type}_cost`] = editCost;
+        // Update local state or any other necessary state management
+        HotelDetail[`rt${selectedRoom.type}_count`] = editCount;
+        HotelDetail[`rt${selectedRoom.type}_cost`] = editCost;
 
-      setOpenDialog(false); // Close the dialog after submission
-    } catch (error) {
-      console.error('Error updating room:', error);
-      showLoginExpiredPopup();
-      // Handle error appropriately
+        setOpenDialog(false); // Close the dialog after submission
+      } catch (error) {
+        console.error('Error updating room:', error);
+        showLoginExpiredPopup();
+      }
     }
+  };
+
+  const showLoginExpiredPopup = () => {
+    alert('Login expired. Redirecting to home page.');
+    localStorage.clear();
+    navigate('/');
+  };
+
+  if (loading) {
+    return <Loader />;
   }
-};
-
-const showLoginExpiredPopup = () => {
-  // Handle login expiration
-  alert('Login expired. Redirecting to home page.');
-  localStorage.clear();
-  navigate('/');
-};
-
 
   return (
     <>
-      {/* Display hotel details */}
-      <div className="container mx-auto p-4">
-        {/* Back Button */}
-      <Button
-        component={Link}
-        to="/HomeMan"
-        variant="outlined"
-        color="primary"
-        style={{ marginBottom: '20px' }}
-      >
-        Back
-      </Button>
-        <div className="">
-          {hotelDetails.map(detail => (
-            <RoundedBox key={detail.id}>
-              <Typography variant="h5">{detail.name}</Typography>
-              <Typography variant="h6" style={{ marginBottom: '10px' }}>{detail.city}</Typography>
-              <Typography variant="body1">{detail.description}</Typography>
-              <Typography variant="body1">{detail.category}</Typography>
-            </RoundedBox>
-          ))}
-        </div>
-      </div>
+      {loading ? (
+        <div>Loading...</div> // Show loading indicator while data is being fetched
+      ) : error ? (
+        <div>{error}</div> // Show error message if data fetching fails
+      ) : (
+        <>
+          {/* Display hotel details */}
+          <div className="container mx-auto p-4">
+            <Button
+              component={Link}
+              to="/HomeMan"
+              variant="outlined"
+              color="primary"
+              style={{ marginBottom: '20px' }}
+            >
+              Back
+            </Button>
+            <div>
+              {hotelDetails.map(detail => (
+                <RoundedBox key={detail.id}>
+                  <Typography variant="h5">{detail.name}</Typography>
+                  <Typography variant="h6" style={{ marginBottom: '10px' }}>{detail.city}</Typography>
+                  <Typography variant="body1">{detail.description}</Typography>
+                  <Typography variant="body1">{detail.category}</Typography>
+                </RoundedBox>
+              ))}
+            </div>
+          </div>
 
-      {/* Room Cards */}
-      <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
-        {RoomDetail.map(room => (
-          <RoomCard key={room.type} onClick={() => handleRoomClick(room)}>
-            <h2 className="text-lg font-semibold">{room.name}</h2>
-            <p className="text-lg text-gray-500"></p>
-            {/* Display room count and cost from HotelDetail */}
-            {hotelDetails.length > 0 && (
+          {/* Room Cards */}
+          <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
+            {RoomDetail.map(room => (
+              <RoomCard key={room.type} onClick={() => handleRoomClick(room)}>
+                <h2 className="text-lg font-semibold">{room.name}</h2>
+                <p className="text-lg text-gray-500"></p>
+                {hotelDetails.length > 0 && (
+                  <>
+                    <p className="text-sm">Total Room Count: {HotelDetail[`rt${room.type}_count`]}</p>
+                    <p className="text-sm">Room Cost: ${HotelDetail[`rt${room.type}_cost`] || '-'}</p>
+                  </>
+                )}
+              </RoomCard>
+            ))}
+          </div>
+
+          {/* Room Detail Dialog */}
+          <Dialog open={openDialog} onClose={handleCloseDialog}>
+            {selectedRoom && (
               <>
-                <p className="text-sm">Total Room Count: {HotelDetail[`rt${room.type}_count`]}</p>
-                <p className="text-sm">Room Cost: ${HotelDetail[`rt${room.type}_cost`] || '-'}</p>
+                <DialogTitle>{selectedRoom.name}</DialogTitle>
+                <DialogContent dividers>
+                  <Typography variant="body1">{selectedRoom.description}</Typography>
+                  <Typography variant="body1" style={{ marginTop: '8px', marginBottom: '8px' }}>Ideal for: {selectedRoom.idealfor}</Typography>
+                  <TextField
+                    margin="dense"
+                    id="count"
+                    label="Total Room Count"
+                    type="number"
+                    fullWidth
+                    value={editCount}
+                    onChange={handleCountChange}
+                  />
+                  <TextField
+                    margin="dense"
+                    id="cost"
+                    label="Room Cost"
+                    type="number"
+                    fullWidth
+                    value={editCost}
+                    onChange={handleCostChange}
+                  />
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleCloseDialog} color="primary">
+                    Cancel
+                  </Button>
+                  <Button onClick={handleSubmit} color="primary">
+                    Save
+                  </Button>
+                </DialogActions>
               </>
             )}
-          </RoomCard>
-        ))}
-      </div>
-
-      {/* Room Detail Dialog */}
-      <Dialog open={openDialog} onClose={handleCloseDialog}>
-        {selectedRoom && (
-          <>
-            <DialogTitle>{selectedRoom.name}</DialogTitle>
-            <DialogContent dividers>
-              <Typography variant="body1">{selectedRoom.description}</Typography>
-              <Typography variant="body1" style={{ marginTop: '8px', marginBottom: '8px' }}>Ideal for: {selectedRoom.idealfor}</Typography>
-              {/* Editable fields for count and cost */}
-              <TextField
-                margin="dense"
-                id="count"
-                label="Toatal Room Count"
-                type="number"
-                fullWidth
-                value={editCount}
-                onChange={handleCountChange}
-              />
-              <TextField
-                margin="dense"
-                id="cost"
-                label="Room Cost"
-                type="number"
-                fullWidth
-                value={editCost}
-                onChange={handleCostChange}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleCloseDialog} color="primary">
-                Cancel
-              </Button>
-              <Button onClick={handleSubmit} color="primary">
-                Save
-              </Button>
-            </DialogActions>
-          </>
-        )}
-      </Dialog>
+          </Dialog>
+        </>
+      )}
     </>
   );
 };

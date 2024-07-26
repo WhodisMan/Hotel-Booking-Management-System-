@@ -5,6 +5,7 @@ import { Link,useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { HotelRoomDetail } from '../Detail/HotelDetail';
 import './HomeMan.css';
+import Loader from '../Components/Loader';
 
 
 const PaperContainer = styled(Paper)(({ theme }) => ({

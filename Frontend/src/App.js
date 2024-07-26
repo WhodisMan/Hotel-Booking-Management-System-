@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import GlobleContext from './contextApi/GlobleContex';
+import Loader from './Components/Loader';
+
+// Pages
 import Home from './page/Home';
 import About from './page/About';
 import CategoryPage from './page/CategoryPage';
@@ -11,32 +14,48 @@ import ManagerLogin from './page/ManagerLogin';
 import ErrorPage from './page/ErrorPage';
 import SingleHotelView from './page/SingleHotelView';
 import Profile from './page/Profile';
+import PaymentPage from './page/PaymentPage';
+
+// Manager Pages
 import HomeMan from './Manager/HomeMan';
 import Dashboard from './Manager/Dashboard';
 import Rooms from './Manager/Rooms';
 import Booking from './Manager/Booking';
-import PaymentPage from './page/PaymentPage';
+
+// Components
 import Header from './Components/Header';
 import HeaderUser from './Components/HeaderUser';
 import HeaderManager from './Components/HeaderManager';
 import Footer from './Components/Footer';
-import ProtectedRoute from './Components/ProtectedRoute'; // Import ProtectedRoute
+import ProtectedRoute from './Components/ProtectedRoute';
+
+// Loader Component
+
 
 function App() {
   const [userType, setUserType] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedUserType = localStorage.getItem('UserType');
-    if (storedUserType) {
-      setUserType(storedUserType);
-    }
-  }, []); // Empty dependency array means this effect runs once when the component mounts
+    const fetchData = async () => {
+      try {
+        const storedUserType = localStorage.getItem('UserType');
+        if (storedUserType) {
+          setUserType(storedUserType);
+        }
+      } catch (error) {
+        console.error('Failed to fetch user type:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  useEffect(() => {
-    console.log(userType); // Logs the updated userType whenever it changes
-  }, [userType]);
+    fetchData();
+  }, []);
 
-  
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <GlobleContext>
@@ -47,7 +66,7 @@ function App() {
         {userType !== 'user' && userType !== 'manager' && <Header />}
         
         <Routes>
-          {/* Public routes */}
+          {/* Public Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/About" element={<About />} />
           <Route path="/Login" element={<Login />} />
@@ -57,7 +76,7 @@ function App() {
           <Route path="/ManagerRegister" element={<ManagerRegister />} />
           <Route path="/ManagerLogin" element={<ManagerLogin />} />
 
-          {/* Protected routes for users */}
+          {/* Protected Routes for Users */}
           <Route 
             path="/CategoryPage" 
             element={<ProtectedRoute element={<CategoryPage />} allowedUserTypes={['user']} userType={userType} />} 
@@ -71,7 +90,7 @@ function App() {
             element={<ProtectedRoute element={<PaymentPage />} allowedUserTypes={['user']} userType={userType} />} 
           />
 
-          {/* Protected routes for managers */}
+          {/* Protected Routes for Managers */}
           <Route 
             path="/Dashboard" 
             element={<ProtectedRoute element={<Dashboard />} allowedUserTypes={['manager']} userType={userType} />} 
@@ -89,12 +108,12 @@ function App() {
             element={<ProtectedRoute element={<Booking />} allowedUserTypes={['manager']} userType={userType} />} 
           />
 
-
-          {/* Catch-all route */}
+          {/* Catch-all Route */}
           <Route path="*" element={<ErrorPage />} />
         </Routes>
+        
+        <Footer />
       </BrowserRouter>
-      <Footer />
     </GlobleContext>
   );
 }

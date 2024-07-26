@@ -4,6 +4,7 @@ import { styled } from '@mui/material/styles';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { PieChart, Pie, Cell, Legend, Tooltip, BarChart, Bar, XAxis, YAxis } from 'recharts';
+import Loader from '../Components/Loader';  // Import the Loader component
 import './Dashboard.css';
 
 // Styled components for Paper and Typography
@@ -36,6 +37,7 @@ function Dashboard() {
   const [roomCategories, setRoomCategories] = useState([0, 0, 0, 0]);
   const [availableRooms, setAvailableRooms] = useState([]);
   const [totalRooms, setTotalRooms] = useState([]);
+  const [loading, setLoading] = useState(true); // Add loading state
   const navigate = useNavigate();
   const [chartData, setChartData] = useState({
     labels: [],
@@ -159,6 +161,14 @@ function Dashboard() {
     if (storedHotelDetail[0]) {
       fetchHotelDetails(storedHotelDetail[0].city, localStorage.getItem('pid'));
     }
+    
+    // Set loading to false once all data fetching is done
+    Promise.all([fetchBookingRecords(), fetchHotelInfo(), storedHotelDetail[0] ? fetchHotelDetails(storedHotelDetail[0].city, localStorage.getItem('pid')) : Promise.resolve()])
+      .then(() => setLoading(false))
+      .catch(error => {
+        console.error('Error during fetching:', error);
+        setLoading(false);
+      });
   }, []);
 
   useEffect(() => {
@@ -230,6 +240,10 @@ function Dashboard() {
     localStorage.clear();
     navigate('/');
   };
+
+  if (loading) {
+    return <Loader />; // Show loader while data is being fetched
+  }
 
   return (
     <div className="container mx-auto p-4">
