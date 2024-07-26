@@ -28,6 +28,11 @@
 .bookings-th {
   background-color: #f2f2f2;
   font-weight: bold;
+  cursor: pointer; /* Indicate that the header is clickable */
+}
+
+.bookings-th:hover {
+  background-color: #e2e2e2; /* Light background on hover */
 }
 
 .bookings-tr:hover {

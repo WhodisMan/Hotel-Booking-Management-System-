@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link, useNavigate } from 'react-router-dom';
+import { Button} from '@mui/material';
 import "./Booking.css";
 
 // Function to format dates to DD/MM/YYYY
@@ -11,6 +13,8 @@ const formatDate = (dateString) => {
 
   return `${day}/${month}/${year}`;
 };
+
+
 
 const getRoomCategoryName = (categoryNumber) => {
   switch (categoryNumber) {
@@ -32,6 +36,7 @@ function Booking() {
   const [loading, setLoading] = useState(true);
   const [sortColumn, setSortColumn] = useState('sno'); // Default sorting column
   const [sortDirection, setSortDirection] = useState('asc'); // Default sorting direction
+  const navigate = useNavigate();
 
   // Function to fetch bookings data
   const fetchBookings = async () => {
@@ -68,6 +73,7 @@ function Booking() {
       setLoading(false);
     } catch (error) {
       console.error("There was an error fetching the bookings!", error);
+      showLoginExpiredPopup();
       setLoading(false);
     }
   };
@@ -96,22 +102,89 @@ function Booking() {
     return <div className='loading'>Loading...</div>;
   }
 
+  const showLoginExpiredPopup = () => {
+    // Handle login expiration
+    alert('Login expired. Redirecting to home page.');
+    localStorage.clear();
+    navigate('/');
+    window.location.reload();
+  };
+
   return (
     <div className="container mx auto p-4">
+      <Button
+        component={Link}
+        to="/HomeMan"
+        variant="outlined"
+        color="primary"
+        style={{ marginBottom: '20px' }}
+      >
+        Back
+      </Button>
       <h1 className="bookings-header">Bookings</h1>
       <table className="bookings-table">
         <thead>
           <tr>
-            <th className="bookings-th" onClick={() => handleSort('sno')}>Sno</th>
-            <th className="bookings-th" onClick={() => handleSort('id')}>Booking ID</th>
-            <th className="bookings-th" onClick={() => handleSort('userId')}>User ID</th>
-            <th className="bookings-th" onClick={() => handleSort('roomCategory')}>Category</th>
-            <th className="bookings-th" onClick={() => handleSort('bookingDate')}>Booking Date</th>
-            <th className="bookings-th" onClick={() => handleSort('checkInDate')}>Check-in Date</th>
-            <th className="bookings-th" onClick={() => handleSort('checkOutDate')}>Check-out Date</th>
-            <th className="bookings-th" onClick={() => handleSort('guestCount')}>Guest Count</th>
-            <th className="bookings-th" onClick={() => handleSort('price')}>Price</th>
-            <th className="bookings-th" onClick={() => handleSort('status')}>Status</th>
+            <th
+              className={`bookings-th ${sortColumn === 'sno' ? (sortDirection === 'asc' ? 'sorted-asc' : 'sorted-desc') : ''}`}
+              onClick={() => handleSort('sno')}
+            >
+              Sno
+            </th>
+            <th
+              className={`bookings-th ${sortColumn === 'id' ? (sortDirection === 'asc' ? 'sorted-asc' : 'sorted-desc') : ''}`}
+              onClick={() => handleSort('id')}
+            >
+              Booking ID
+            </th>
+            <th
+              className={`bookings-th ${sortColumn === 'userId' ? (sortDirection === 'asc' ? 'sorted-asc' : 'sorted-desc') : ''}`}
+              onClick={() => handleSort('userId')}
+            >
+              User ID
+            </th>
+            <th
+              className={`bookings-th ${sortColumn === 'roomCategory' ? (sortDirection === 'asc' ? 'sorted-asc' : 'sorted-desc') : ''}`}
+              onClick={() => handleSort('roomCategory')}
+            >
+              Category
+            </th>
+            <th
+              className={`bookings-th ${sortColumn === 'bookingDate' ? (sortDirection === 'asc' ? 'sorted-asc' : 'sorted-desc') : ''}`}
+              onClick={() => handleSort('bookingDate')}
+            >
+              Booking Date
+            </th>
+            <th
+              className={`bookings-th ${sortColumn === 'checkInDate' ? (sortDirection === 'asc' ? 'sorted-asc' : 'sorted-desc') : ''}`}
+              onClick={() => handleSort('checkInDate')}
+            >
+              Check-in Date
+            </th>
+            <th
+              className={`bookings-th ${sortColumn === 'checkOutDate' ? (sortDirection === 'asc' ? 'sorted-asc' : 'sorted-desc') : ''}`}
+              onClick={() => handleSort('checkOutDate')}
+            >
+              Check-out Date
+            </th>
+            <th
+              className={`bookings-th ${sortColumn === 'guestCount' ? (sortDirection === 'asc' ? 'sorted-asc' : 'sorted-desc') : ''}`}
+              onClick={() => handleSort('guestCount')}
+            >
+              Guest Count
+            </th>
+            <th
+              className={`bookings-th ${sortColumn === 'price' ? (sortDirection === 'asc' ? 'sorted-asc' : 'sorted-desc') : ''}`}
+              onClick={() => handleSort('price')}
+            >
+              Price
+            </th>
+            <th
+              className={`bookings-th ${sortColumn === 'status' ? (sortDirection === 'asc' ? 'sorted-asc' : 'sorted-desc') : ''}`}
+              onClick={() => handleSort('status')}
+            >
+              Status
+            </th>
             <th className="bookings-th">Cancellation Prediction</th>
           </tr>
         </thead>

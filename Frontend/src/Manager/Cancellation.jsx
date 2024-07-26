@@ -7,7 +7,7 @@ function CancellationPrediction({ booking }) {
   useEffect(() => {
     const fetchPrediction = async () => {
       try {
-        const response = await axios.post('http://localhost:5001/predict', booking);
+        const response = await axios.post('http://localhost:5000/predict', booking);
         setPrediction(response.data.cancellationPrediction);
       } catch (error) {
         console.error('Error predicting cancellation:', error);

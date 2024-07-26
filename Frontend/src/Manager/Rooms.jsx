@@ -206,7 +206,7 @@ const showLoginExpiredPopup = () => {
         {RoomDetail.map(room => (
           <RoomCard key={room.type} onClick={() => handleRoomClick(room)}>
             <h2 className="text-lg font-semibold">{room.name}</h2>
-            <p className="text-sm text-gray-500">Room Type: {room.type}</p>
+            <p className="text-lg text-gray-500"></p>
             {/* Display room count and cost from HotelDetail */}
             {hotelDetails.length > 0 && (
               <>

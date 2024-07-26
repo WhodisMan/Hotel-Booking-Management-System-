@@ -59,11 +59,11 @@ curl.exe -X POST -H "Authorization: Bearer {TOKEN}" -H "Content-Type: applicatio
 
 ***fetch records for manager
 curl.exe -X POST -H "Authorization: Bearer {TOKEN}" -H "Content-Type: application/json" -d "{\"pid\":16560}" http://localhost:8080/mngr/fetchRec
-curl.exe -X POST -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcyMTkxMDUzNiwianRpIjoiMjc2M2ZjYWYtZjhmOS00YTE5LWFlZmItODEwNWU0OTJkZTUxIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTY1NjAsIm5iZiI6MTcyMTkxMDUzNiwiY3NyZiI6IjZkNDRkY2IxLWJjYzQtNGNmMy05MmM5LTA2ODE2Zjg5ZjI1NiIsImV4cCI6MTcyMTkxNDEzNn0.E8ex7t37Pv-WSihVWiBymeK8OiZJ3kxB-jzuO3QSD5A" -H "Content-Type: application/json" -d "{\"pid\":16562,\"uid\":2}" http://localhost:5000/mngr/fetchRec
+curl.exe -X POST -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcyMTk3NDkyOSwianRpIjoiOWJjODdhNGItMzlmMy00NDMwLWJmMmQtY2Q5N2RkMjBmN2EyIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTY1NjAsIm5iZiI6MTcyMTk3NDkyOSwiY3NyZiI6ImEwZTBjZDQ3LTJjZmItNDVmZC04Yjg3LTY4ZTgwZGM5NDgxMyIsImV4cCI6MTcyMTk3ODUyOX0.S7srFZIlExmZVitOtHMxKtxDcLA50qud9ZNXGf_hpqs" -H "Content-Type: application/json" -d "{\"pid\":16562,\"uid\":2}" http://localhost:5000/mngr/fetchRec
 
 
 ***get prediction from available
 
-curl.exe -X POST -H "Authorization: Bearer {TOKEsN}" -H "Content-Type: application/json" -d "{\"rid\":\"5\",\"pid\":16560}" http://localhost:8080/predict
+curl.exe -X POST -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcyMTk3ODk4MywianRpIjoiNzE4OTBmNmMtZTUxMy00MTczLTg5MDctMTdkMzExZjMwMjdmIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTY1NjAsIm5iZiI6MTcyMTk3ODk4MywiY3NyZiI6IjRmMzcwYzU4LWQ0ZDEtNGFmOC05YmNjLTdlNGQxNTdjNTQzNCIsImV4cCI6MTcyMTk4MjU4M30.qOJbQqmCMRXt1oBR2k5EpBrLxCPhiezP6eaAzZ5qACY" -H "Content-Type: application/json" -d "{\"rid\":\"5\",\"pid\":16560}" http://localhost:5000/predict
 
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTcxNDkyNTgzMSwianRpIjoiZTZjMWNlOTQtYzMyMi00ZTQxLThiYWMtNGE0NWQ1N2EwYThjIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MTY1NjAsIm5iZiI6MTcxNDkyNTgzMSwiY3NyZiI6IjBkYWU0MzA3LTc3OGUtNDBiZS1iNDdiLTMxYTYyYzBmNDQzMiIsImV4cCI6MTcxNDkyNjczMX0.wXLa5ALii9OZs4sMw7p_FAoNYHZrY0hIKYTPiSex4Uk

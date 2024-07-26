@@ -205,8 +205,10 @@ function Dashboard() {
     }
   }, [data]);
 
+  const roomCategoryNames = ['Standard', 'Deluxe', 'Executive', 'Presidential'];
+
   const pieChartData1 = roomCategories.map((count, index) => ({
-    name: `Category ${index + 1}`,
+    name: roomCategoryNames[index],
     value: count
   }));
 
@@ -230,8 +232,8 @@ function Dashboard() {
   };
 
   return (
-    <div className="container mx auto p-4">
-      <div className="" style={{marginBottom:'10px'}}>
+    <div className="container mx-auto p-4">
+      <div className="" style={{ marginBottom: '10px' }}>
         <Button
           component={Link}
           to="/HomeMan"
@@ -246,7 +248,6 @@ function Dashboard() {
             <RoundedBox key={detail[0]}> {/* Adjust the key based on your data structure */}
               <Typography variant="h5">{detail[1]}</Typography> {/* Adjust properties based on your data structure */}
               <Typography variant="h6" style={{ }}>{detail[3]}</Typography>
-           
             </RoundedBox>
           ))}
         </div>
@@ -316,7 +317,7 @@ function Dashboard() {
         </Grid>
       </Grid>
 
-      <Grid >
+      <Grid>
         {/* Monthly Revenue Line Chart */}
         <Grid item xs={12} md={6}>
           <ChartContainer>
