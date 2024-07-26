@@ -95,11 +95,12 @@ function Booking() {
   }
 
   return (
+    <div className='bookings-container'>
     <div className="container mx auto p-4">
       <Button
         component={Link}
         to="/HomeMan"
-        variant="outlined"
+        variant="contained"
         color="primary"
         style={{ marginBottom: '20px' }}
       >
@@ -162,6 +163,7 @@ function Booking() {
           ))}
         </tbody>
       </table>
+    </div>
     </div>
   );
 }
