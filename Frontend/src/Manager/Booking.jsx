@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import CancellationPrediction from '../Manager/Cancellation';
 import { HotelRoomDetail } from '../Detail/HotelDetail';
-import './Booking.css';
+import "./Booking.css"
 
 function Booking() {
   const [bookings, setBookings] = useState([]);
@@ -101,28 +101,28 @@ function Booking() {
   }
 
   return (
-    <div className="container">
-      <h1>Bookings</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>Booking ID</th>
-            <th>Room Number</th>
-            <th>Guest Name</th>
-            <th>Check-in Date</th>
-            <th>Check-out Date</th>
-            <th>Cancellation Prediction</th>
+    <div className="bookings-container">
+    <h1 className="bookings-header">Bookings</h1>
+    <table className="bookings-table">
+      <thead>
+        <tr>
+          <th className="bookings-th">Booking ID</th>
+          <th className="bookings-th">Room Number</th>
+          <th className="bookings-th">Guest Name</th>
+          <th className="bookings-th">Check-in Date</th>
+          <th className="bookings-th">Check-out Date</th>
+          <th className="bookings-th">Cancellation Prediction</th>
           </tr>
         </thead>
         <tbody>
           {bookings.map(booking => (
-            <tr key={booking.id}>
-              <td>{booking.id}</td>
-              <td>{booking.roomNumber}</td>
-              <td>{booking.guestName}</td>
-              <td>{booking.checkInDate}</td>
-              <td>{booking.checkOutDate}</td>
-              <td><CancellationPrediction booking={booking} /></td>
+            <tr key={booking.id} className="bookings-tr">
+            <td className="bookings-td">{booking.id}</td>
+            <td className="bookings-td">{booking.roomNumber}</td>
+            <td className="bookings-td">{booking.guestName}</td>
+            <td className="bookings-td">{booking.checkInDate}</td>
+            <td className="bookings-td">{booking.checkOutDate}</td>
+            <td className="bookings-td"><CancellationPrediction booking={booking} /></td>
             </tr>
           ))}
         </tbody>
