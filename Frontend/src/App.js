@@ -30,7 +30,13 @@ function App() {
     if (storedUserType) {
       setUserType(storedUserType);
     }
-  }, []);
+  }, []); // Empty dependency array means this effect runs once when the component mounts
+
+  useEffect(() => {
+    console.log(userType); // Logs the updated userType whenever it changes
+  }, [userType]);
+
+  
 
   return (
     <GlobleContext>

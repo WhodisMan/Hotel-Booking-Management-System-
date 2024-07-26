@@ -37,7 +37,7 @@ const HeaderUser = () => {
     <>
       <div className="flex justify-between items-center p-4 pt-8 container m-auto">
         <div className={`hidden md:flex space-x-4 ${isMenu ? "block" : "hidden"}`}>
-          <Link to={"/HomeMan"}>
+          <Link to={"/"}>
             <Button variant="contained" color="primary" sx={{ textTransform: 'uppercase', fontWeight: 'normal' }}>
               Home
             </Button>
@@ -55,6 +55,11 @@ const HeaderUser = () => {
           </Link>
         </div>
         <div className="hidden md:flex space-x-4">
+        <Link to={"/HomeMan"}>
+            <Button variant="contained" color="primary" sx={{ textTransform: 'uppercase', fontWeight: 'normal' }}>
+              Manage
+            </Button>
+          </Link>
           
           <Button variant="contained" color="secondary" onClick={handleLogout}>
             Logout
