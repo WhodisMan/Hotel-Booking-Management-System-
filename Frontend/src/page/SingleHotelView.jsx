@@ -59,6 +59,7 @@ const SingleHotelView = () => {
       } catch (error) {
         console.error("Error fetching data:", error);
         setHotelDetail(null); // Handle error state if needed
+        showLoginExpiredPopup();
       }
     };
 
@@ -165,6 +166,13 @@ const SingleHotelView = () => {
   
     closeModal();
     navigate('/PaymentPage');
+  };
+
+  const showLoginExpiredPopup = () => {
+    // Handle login expiration
+    alert('Login expired. Redirecting to home page.');
+    localStorage.clear();
+    navigate('/');
   };
   
   

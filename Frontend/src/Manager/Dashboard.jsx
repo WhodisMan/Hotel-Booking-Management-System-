@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Grid, Paper, Typography, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
-import { PieChart, Pie, Cell, Legend, Tooltip ,BarChart, Bar, XAxis, YAxis} from 'recharts';
+import { Link, useNavigate } from 'react-router-dom';
+import { PieChart, Pie, Cell, Legend, Tooltip, BarChart, Bar, XAxis, YAxis } from 'recharts';
 import './Dashboard.css';
 
 // Styled components for Paper and Typography
@@ -14,7 +14,7 @@ const ChartContainer = styled(Paper)(({ theme }) => ({
   height: '100%',
   display: 'flex',
   flexDirection: 'column',
-  alignItems: 'center', // Center align contents
+  alignItems: 'center',
 }));
 
 const RoundedBox = styled('div')(({ theme }) => ({
@@ -30,35 +30,39 @@ const ChartTitle = styled(Typography)(({ theme }) => ({
   marginBottom: theme.spacing(2),
 }));
 
-
-
 function Dashboard() {
   const [data, setData] = useState([]);
   const [hotelDetails, setHotelDetails] = useState([]);
-  const [roomCategories, setRoomCategories] = useState([0, 0, 0, 0]); // Initialize as per room categories 1 to 4
+  const [roomCategories, setRoomCategories] = useState([0, 0, 0, 0]);
   const [availableRooms, setAvailableRooms] = useState([]);
   const [totalRooms, setTotalRooms] = useState([]);
+  const navigate = useNavigate();
+  const [chartData, setChartData] = useState({
+    labels: [],
+    datasets: [
+      {
+        label: 'Monthly Revenue',
+        data: [],
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+        borderWidth: 1,
+      }
+    ]
+  });
 
   const combinedData = availableRooms.map((entry, index) => ({
     category: entry.category,
     availableRooms: entry.count,
-    bookedRooms: (totalRooms[index].count - entry.count)
+    bookedRooms: (totalRooms[index]?.count - entry.count) || 0
   }));
 
-
   useEffect(() => {
-    // Fetch hotel details from localStorage
-    const storedHotelDetails = JSON.parse(localStorage.getItem("HotelDetails")) || [];
-    setHotelDetails(storedHotelDetails);
-
-    // Fetch booking records
     const fetchBookingRecords = async () => {
       try {
         const token = localStorage.getItem('token');
         const apiUrl = 'http://localhost:5000/mngr/fetchRec';
-
         const response = await axios.post(apiUrl, {
-          pid: localStorage.getItem('pid') // Replace with the actual PID you want to fetch bookings for
+          pid: localStorage.getItem('pid')
         }, {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -71,14 +75,10 @@ function Dashboard() {
             id: record[0],
             category: record[3],
             bookingDate: record[4],
-            checkInDate: record[5],
-            checkInDate: record[6],
-            guestCount: record[7],
             amount: record[8],
             cancelled: record[9]
           }));
 
-          // Calculate room counts per category
           const categoryCounts = [0, 0, 0, 0];
           bookings.forEach(booking => {
             if (booking.category >= 1 && booking.category <= 4) {
@@ -90,9 +90,11 @@ function Dashboard() {
           setData(bookings);
         } else {
           console.error('Invalid API response format:', response.data);
+          showLoginExpiredPopup();
         }
       } catch (error) {
         console.error('Error fetching booking records:', error);
+        showLoginExpiredPopup();
       }
     };
 
@@ -101,23 +103,23 @@ function Dashboard() {
         const response = await axios.post('http://localhost:5000/city', {
           city: cityname
         });
-  
-        const filteredProperties = response.data.properties.filter((property) => property[0] === parseInt(pid));
-        console.log(filteredProperties);
-  
-        if (filteredProperties.length > 0) {
 
+        const filteredProperties = response.data.properties.filter(property => property[0] === parseInt(pid));
+
+        console.log('Fetched Hotel Details:', filteredProperties);
+
+        if (filteredProperties.length > 0) {
           setTotalRooms([
-            {category:1,count:filteredProperties[0][4]},
-            {category:2,count:filteredProperties[0][5]},
-            {category:3,count:filteredProperties[0][6]},
-            {category:4,count:filteredProperties[0][7]},
+            { category: 1, count: filteredProperties[0][4] },
+            { category: 2, count: filteredProperties[0][5] },
+            { category: 3, count: filteredProperties[0][6] },
+            { category: 4, count: filteredProperties[0][7] },
           ]);
-  
-          
+          setHotelDetails(filteredProperties); // Update this to set the fetched data
         }
       } catch (error) {
         console.error('Error fetching hotel details:', error);
+        showLoginExpiredPopup();
       }
     };
 
@@ -127,7 +129,7 @@ function Dashboard() {
         const apiUrl = 'http://localhost:5000/hotel';
 
         const response = await axios.post(apiUrl, {
-          hotel_id: localStorage.getItem('pid') // Replace with the actual hotel ID you want to fetch info for
+          hotel_id: localStorage.getItem('pid')
         }, {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -136,32 +138,73 @@ function Dashboard() {
         });
 
         if (response.data && response.data.info) {
-          // Extract available rooms data
           const roomsData = response.data.info.map(item => ({
             category: item[0],
             count: item[1]
           }));
           setAvailableRooms(roomsData);
-
-          // Extract reviews data
-         
         } else {
           console.error('Invalid API response format:', response.data);
+          showLoginExpiredPopup();
         }
       } catch (error) {
         console.error('Error fetching hotel info:', error);
+        showLoginExpiredPopup();
       }
     };
 
-    
+    const storedHotelDetail = JSON.parse(localStorage.getItem("HotelDetails")) || [];
     fetchBookingRecords();
     fetchHotelInfo();
-    const storedHotelDetail = JSON.parse(localStorage.getItem("HotelDetails")) || [];
-    console.log(storedHotelDetail[0].city)
-    fetchHotelDetails(storedHotelDetail[0].city,localStorage.getItem('pid'));
+    if (storedHotelDetail[0]) {
+      fetchHotelDetails(storedHotelDetail[0].city, localStorage.getItem('pid'));
+    }
   }, []);
 
-  // Prepare data for pie chart
+  useEffect(() => {
+    const fetchData = () => {
+      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+      const monthlyData = monthNames.reduce((acc, month) => {
+        acc[month] = { sum: 0, count: 0 };
+        return acc;
+      }, {});
+
+      const getMonthName = (dateStr) => {
+        const date = new Date(dateStr);
+        const month = date.getMonth(); // Months are 0-based in JavaScript Date
+        return monthNames[month];
+      };
+
+      data.forEach(booking => {
+        const monthName = getMonthName(booking.bookingDate);
+        if (monthlyData[monthName]) {
+          monthlyData[monthName].sum += parseFloat(booking.amount) || 0;
+        }
+      });
+
+      const labels = monthNames;
+      const dataPoints = monthNames.map(month => monthlyData[month] ? monthlyData[month].sum : 0);
+
+      setChartData({
+        labels: labels,
+        datasets: [
+          {
+            label: 'Monthly Revenue',
+            data: dataPoints,
+            borderColor: 'rgba(75, 192, 192, 1)',
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderWidth: 1,
+          }
+        ]
+      });
+    };
+
+    if (data.length) {
+      fetchData();
+    }
+  }, [data]);
+
   const pieChartData1 = roomCategories.map((count, index) => ({
     name: `Category ${index + 1}`,
     value: count
@@ -172,139 +215,127 @@ function Dashboard() {
     { name: 'Booked Rooms', value: combinedData.reduce((acc, entry) => acc + entry.bookedRooms, 0) }
   ];
 
-  // Colors for the pie chart segments
+  const pieChartData3 = [
+    { name: 'Cancelled', value: data.filter(i => i.cancelled === 1).length },
+    { name: 'Confirmed', value: data.filter(i => i.cancelled === 0).length }
+  ];
+
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
-  return (
-    <div className="dashboard-container">
-      {/* Back Button */}
-      <Button
-        component={Link}
-        to="/HomeMan"
-        variant="outlined"
-        color="primary"
-        style={{ marginBottom: '20px' }}
-      >
-        Back
-      </Button>
+  const showLoginExpiredPopup = () => {
+    // Handle login expiration
+    alert('Login expired. Redirecting to home page.');
+    localStorage.clear();
+    navigate('/');
+  };
 
-      {/* Hotel Details */}
-      <div className="container mx-auto p-4">
+  return (
+    <div className="container mx-auto p-4">
+      <div className="" style={{marginBottom:'10px'}}>
+        <Button
+          component={Link}
+          to="/HomeMan"
+          variant="outlined"
+          color="primary"
+          style={{ marginBottom: '20px' }}
+        >
+          Back
+        </Button>
         <div className="">
-          {hotelDetails && hotelDetails.map(detail => (
-            <RoundedBox key={detail.id}>
-              <Typography variant="h5">{detail.name}</Typography>
-              <Typography variant="h6" style={{ marginBottom: '10px' }}>{detail.city}</Typography>
-              <Typography variant="body1">{detail.description}</Typography>
-              <Typography variant="body1">{detail.category}</Typography>
+          {hotelDetails && hotelDetails.length > 0 && hotelDetails.map(detail => (
+            <RoundedBox key={detail[0]}> {/* Adjust the key based on your data structure */}
+              <Typography variant="h5">{detail[1]}</Typography> {/* Adjust properties based on your data structure */}
+              <Typography variant="h6" style={{ }}>{detail[3]}</Typography>
+           
             </RoundedBox>
           ))}
         </div>
       </div>
 
       <Grid container spacing={3}>
-        {/* Bookings Bar Chart */}
         <Grid item xs={12} md={6}>
           <ChartContainer>
             <ChartTitle variant="h6">
-              Monthly Bookings
+              Room Availability
             </ChartTitle>
-            <div className="bar-chart">
-              {data.map((item, index) => (
-                <div
-                  key={index}
-                  className="bar"
-                  style={{ height: `${item.amount / 1000}px` }} // Adjust height as per your data
-                  title={`Booking ID: ${item.id}, Amount: $${item.amount}`}
-                ></div>
-              ))}
-            </div>
-            <Typography variant="body2">Month</Typography>
+            <BarChart width={550} height={350} data={combinedData}>
+              <XAxis dataKey="category" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="bookedRooms" stackId="stack" fill="#82ca9d" name="Booked Rooms" />
+              <Bar dataKey="availableRooms" stackId="stack" fill="#8884d8" name="Available Rooms" />
+            </BarChart>
           </ChartContainer>
         </Grid>
 
-        {/* Revenue Bar Chart */}
+        {/* Pie Charts */}
         <Grid item xs={12} md={6}>
           <ChartContainer>
-            <ChartTitle variant="h6">
-              Monthly Revenue
-            </ChartTitle>
-            <div className="bar-chart">
-              {data.map((item, index) => (
-                <div
-                  key={index}
-                  className="bar"
-                  style={{ height: `${item.amount / 100}px`, backgroundColor: '#8884d8' }}
-                  title={`Booking ID: ${item.id}, Revenue: $${item.amount}`}
-                ></div>
-              ))}
-            </div>
-            <Typography variant="body2">Month</Typography>
-          </ChartContainer>
-        </Grid>
-
-        {/* Room Category Pie Chart */}
-        <Grid item xs={12} md={6}>
-          <ChartContainer>
-            <ChartTitle variant="h6">
-              Room Category Statistics
-            </ChartTitle>
-            <PieChart width={300} height={300} style={{ marginBottom: '20px' }}>
-              <Pie
-                data={pieChartData1}
-                cx={150} // Center of the pie chart
-                cy={100} // Center of the pie chart
-                outerRadius={100}
-                fill="#8884d8"
-                dataKey="value"
-              >
+            <ChartTitle variant="h6">Room Categories</ChartTitle>
+            <PieChart width={400} height={300}>
+              <Pie data={pieChartData1} dataKey="value" cx="50%" cy="50%" outerRadius={100} fill="#8884d8" label>
                 {pieChartData1.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
-              <Legend />
               <Tooltip />
+              <Legend />
             </PieChart>
           </ChartContainer>
         </Grid>
 
         <Grid item xs={12} md={6}>
           <ChartContainer>
-            <ChartTitle variant="h6">
-              Room Occupancy 
-            </ChartTitle>
-            <PieChart width={300} height={300} style={{ marginBottom: '20px' }}>
-              <Pie
-                data={pieChartData2}
-                cx={150} // Center of the pie chart
-                cy={100} // Center of the pie chart
-                outerRadius={100}
-                fill="#8884d8"
-                dataKey="value"
-              >
+            <ChartTitle variant="h6">Room Availability</ChartTitle>
+            <PieChart width={400} height={300}>
+              <Pie data={pieChartData2} dataKey="value" cx="50%" cy="50%" outerRadius={100} fill="#82ca9d" label>
                 {pieChartData2.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
-              <Legend />
               <Tooltip />
+              <Legend />
             </PieChart>
           </ChartContainer>
         </Grid>
 
         <Grid item xs={12} md={6}>
-      <BarChart width={600} height={400} data={combinedData}>
-        <XAxis dataKey="category" />
-        <YAxis />
-        <Tooltip />
-        <Legend />
-        <Bar dataKey="bookedRooms" stackId="stack" fill="#82ca9d" name="Booked Rooms" />
-        <Bar dataKey="availableRooms" stackId="stack" fill="#8884d8" name="Available Rooms" />
-      </BarChart>
-    </Grid>
+          <ChartContainer>
+            <ChartTitle variant="h6">Booking Status</ChartTitle>
+            <PieChart width={400} height={300}>
+              <Pie data={pieChartData3} dataKey="value" cx="50%" cy="50%" outerRadius={100} fill="#ff7300" label>
+                {pieChartData3.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+              <Legend />
+            </PieChart>
+          </ChartContainer>
+        </Grid>
+      </Grid>
 
-
-        
+      <Grid >
+        {/* Monthly Revenue Line Chart */}
+        <Grid item xs={12} md={6}>
+          <ChartContainer>
+            <ChartTitle variant="h6">Monthly Revenue</ChartTitle>
+            <BarChart
+              width={800}
+              height={300}
+              data={chartData.labels.map((label, index) => ({
+                name: label,
+                revenue: chartData.datasets[0].data[index]
+              }))}
+            >
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="revenue" fill="#8884d8" />
+            </BarChart>
+          </ChartContainer>
+        </Grid>
       </Grid>
     </div>
   );

@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Grid, Paper, Typography, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { HotelRoomDetail } from '../Detail/HotelDetail';
 import './HomeMan.css';
+
 
 const PaperContainer = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(2),
@@ -27,6 +28,7 @@ const PageContainer = styled('div')({
 });
 
 const HomeMan = () => {
+  const navigate = useNavigate();
   const [pid, setPid] = useState(null);
   const [filteredRooms, setFilteredRooms] = useState([]);
 
@@ -57,6 +59,13 @@ const HomeMan = () => {
     setFilteredRooms(filtered);
     localStorage.setItem("HotelDetails",JSON.stringify(filtered));
   }, [pid]); // Add pid to the dependency array
+
+  const showLoginExpiredPopup = () => {
+    // Handle login expiration
+    alert('Login expired. Redirecting to home page.');
+    localStorage.clear();
+    navigate('/');
+  };
 
   return (
     <header>

@@ -30,6 +30,8 @@ const Profile = () => {
   const navigate = useNavigate();
   const[user,setUser] = useState([]);
 
+  
+
   useEffect(() => {
     fetchUid();
   }, []); // Fetch UID on initial render
@@ -88,6 +90,7 @@ const Profile = () => {
     })
     .catch(error => {
       console.error('Error making POST request:', error);
+      showLoginExpiredPopup();
       // Handle error if needed
     });
   };
@@ -113,6 +116,7 @@ const Profile = () => {
     })
     .catch(error => {
       console.error('Error making POST request:', error);
+      showLoginExpiredPopup();
       // Handle error if needed
     });
   };
@@ -180,6 +184,7 @@ const Profile = () => {
   })
   .catch(error => {
     console.error('Error making cancellation request:', error);
+    showLoginExpiredPopup();
     // Handle cancellation request error if needed
   });
 

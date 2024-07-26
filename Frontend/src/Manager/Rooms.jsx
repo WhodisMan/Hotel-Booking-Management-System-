@@ -57,6 +57,7 @@ const Rooms = () => {
       }
     } catch (error) {
       console.error('Error fetching hotel details:', error);
+      showLoginExpiredPopup();
     }
   };
 
@@ -160,9 +161,17 @@ const handleSubmit = async () => {
       setOpenDialog(false); // Close the dialog after submission
     } catch (error) {
       console.error('Error updating room:', error);
+      showLoginExpiredPopup();
       // Handle error appropriately
     }
   }
+};
+
+const showLoginExpiredPopup = () => {
+  // Handle login expiration
+  alert('Login expired. Redirecting to home page.');
+  localStorage.clear();
+  navigate('/');
 };
 
 
@@ -170,6 +179,16 @@ const handleSubmit = async () => {
     <>
       {/* Display hotel details */}
       <div className="container mx-auto p-4">
+        {/* Back Button */}
+      <Button
+        component={Link}
+        to="/HomeMan"
+        variant="outlined"
+        color="primary"
+        style={{ marginBottom: '20px' }}
+      >
+        Back
+      </Button>
         <div className="">
           {hotelDetails.map(detail => (
             <RoundedBox key={detail.id}>
