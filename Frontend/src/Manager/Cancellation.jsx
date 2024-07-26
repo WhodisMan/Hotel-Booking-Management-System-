@@ -6,7 +6,7 @@ function CancellationPrediction({ bookingId }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const apiUrl = 'http://localhost:5000/cancellation';
+  const apiUrl = 'http://localhost:5000/predict';
   const accessToken = localStorage.getItem('token');
   const PID = localStorage.getItem('pid');
 

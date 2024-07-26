@@ -24,7 +24,8 @@ const Rooms = () => {
       setLoading(true); // Start loading
       try {
         const storedHotelDetails = JSON.parse(localStorage.getItem("HotelDetails")) || [];
-        setHotelDetails(storedHotelDetails);
+        setHotelDetails(storedHotelDetails[0]);
+
 
         const storedPID = localStorage.getItem('pid');
         if (storedPID) {
@@ -205,9 +206,8 @@ const Rooms = () => {
               {hotelDetails.map(detail => (
                 <RoundedBox key={detail.id}>
                   <Typography variant="h5">{detail.name}</Typography>
-                  <Typography variant="h6" style={{ marginBottom: '10px' }}>{detail.city}</Typography>
-                  <Typography variant="body1">{detail.description}</Typography>
-                  <Typography variant="body1">{detail.category}</Typography>
+                  <Typography variant="h6" style={{ marginBottom: '10px' }}>{detail.description}</Typography>
+
                 </RoundedBox>
               ))}
             </div>
