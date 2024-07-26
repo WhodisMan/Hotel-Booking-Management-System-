@@ -77,12 +77,12 @@ const HomeMan = () => {
       </Typography>
         {/* Display filtered rooms */}
         {filteredRooms.map(room => (
-          <RoomContainer key={room.id} item xs={12}>
+          <RoomContainer key={room.id} item xs={20}>
             <PaperContainer>
-              <Typography variant="h5">{room.name}</Typography>
-              <Typography variant="h6" style={{ marginBottom: '10px' }}>{room.city}</Typography>
-              <Typography variant="body1">{room.description}</Typography>
-              <Typography variant="body1">{room.category}</Typography>
+              <Typography variant="h5 mt-8 text-3xl font-bold tracking-tight md:text-4xl lg:text-6xl d-flex justify-content-center align-items-center">{room.name}</Typography>
+              <Typography variant="h6 d-flex justify-content-center align-items-center" style={{ marginBottom: '10px' }}><h1>{room.city}</h1></Typography>
+              <Typography variant="body1 d-flex justify-content-center align-items-center"><h2>{room.description}</h2></Typography>
+              <Typography variant="body1 d-flex justify-content-center align-items-center"><h3>{room.category}</h3></Typography>
               {/* Add more details as needed */}
             </PaperContainer>
 
