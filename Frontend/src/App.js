@@ -10,7 +10,7 @@ import ManagerRegister from './page/ManagerRegister';
 import ManagerLogin from './page/ManagerLogin';
 import ErrorPage from './page/ErrorPage';
 import SingleHotelView from './page/SingleHotelView';
-import Profile from './page/Profile';
+import Profile from './page/profile';
 import HomeMan from './Manager/HomeMan';
 import Dashboard from './Manager/Dashboard';
 import Rooms from './Manager/Rooms';
@@ -19,6 +19,7 @@ import Header from './Components/Header';
 import HeaderUser from './Components/HeaderUser';
 import HeaderManager from './Components/HeaderManager'; // Import HeaderManager component
 import Footer from './Components/Footer';
+import Booking from './Manager/Booking';
 
 function App() {
   const [userType, setUserType] = useState('');
@@ -52,6 +53,7 @@ function App() {
           <Route path="/SingleHotelView/:id" element={<SingleHotelView />} />
           <Route path="/Profile" element={<Profile />} />
           <Route path="/PaymentPage" element={<PaymentPage />} />
+          <Route path="/Booking" element={<Booking/>}/>
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </BrowserRouter>
