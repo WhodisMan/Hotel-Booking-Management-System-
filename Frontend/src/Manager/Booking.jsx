@@ -1,128 +1,134 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import CancellationPrediction from '../Manager/Cancellation';
-import { HotelRoomDetail } from '../Detail/HotelDetail';
-import "./Booking.css"
+import "./Booking.css";
+
+// Function to format dates to DD/MM/YYYY
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+  const year = date.getFullYear();
+
+  return `${day}/${month}/${year}`;
+};
+
+const getRoomCategoryName = (categoryNumber) => {
+  switch (categoryNumber) {
+    case 1:
+      return 'Standard';
+    case 2:
+      return 'Deluxe';
+    case 3:
+      return 'Executive';
+    case 4:
+      return 'Presidential';
+    default:
+      return 'Unknown'; // Fallback for unexpected values
+  }
+};
 
 function Booking() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
-  const[user,setUser] = useState([]);
+  const [sortColumn, setSortColumn] = useState('sno'); // Default sorting column
+  const [sortDirection, setSortDirection] = useState('asc'); // Default sorting direction
 
-  const isDatePassed = (dateString) => {
-    const currentDate = new Date();
-    const checkDate = new Date(dateString);
-    return currentDate > checkDate; // Compare if current date is greater than check-in date
-  };
-
-  const getBookingData = (uid) => {
-    const apiUrl = 'http://localhost:5000/bookings';
-    const accessToken = localStorage.getItem('token');
-
-    axios.post(apiUrl, { uid }, {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(response => {
-      console.log('POST request successful:', response.data);
-
-      // Assuming response.data.result is the array of bookings data
-      const newBookings = convertResponseToBookings(response.data.result);
-      setBookings(newBookings);
-
-      // Store the bookings data in local storage
-      localStorage.setItem('bookingData', JSON.stringify(response.data.result));  
+  // Function to fetch bookings data
+  const fetchBookings = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const pid = localStorage.getItem('pid');
       
-    })
-    .catch(error => {
-      console.error('Error making POST request:', error);
-      // Handle error if needed
-    });
+      // Make the API call
+      const response = await axios.post('http://localhost:5000/mngr/fetchRec', 
+        { pid },
+        {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        }
+      );
+
+      // Transform the data into the expected format
+      const bookingsData = response.data.result.map(booking => ({
+        id: booking[0],
+        userId: booking[2],
+        roomCategory: getRoomCategoryName(booking[3]),
+        bookingDate: formatDate(booking[4]),
+        checkInDate: formatDate(booking[5]),
+        checkOutDate: formatDate(booking[6]),
+        guestCount: booking[7],
+        price: parseFloat(booking[8]),
+        status: booking[9] === 1 ? 'Cancelled' : 'Confirmed'
+      }));
+
+      // Update state with transformed data
+      setBookings(bookingsData);
+      setLoading(false);
+    } catch (error) {
+      console.error("There was an error fetching the bookings!", error);
+      setLoading(false);
+    }
   };
 
-  const getUserData = (uid) => {
-    const apiUrl = 'http://localhost:5000/userInfo';
-    const accessToken = localStorage.getItem('token');
-
-    axios.post(apiUrl, { uid }, {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`,
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(response => {
-      console.log('POST request successful:');
-      setUser(response.data.res[0]);
-
-
-
-      localStorage.setItem('userData', JSON.stringify(response.data.res));  
-      
-    })
-    .catch(error => {
-      console.error('Error making POST request:', error);
-      // Handle error if needed
-    });
-  };
-
-  const upcomingBookings = bookings.filter((booking) => !isDatePassed(booking.checkInDate));
-  const previousBookings = bookings.filter((booking) => isDatePassed(booking.checkInDate));
-
-  const convertResponseToBookings = (responseData) => {
-    return responseData.map(item => ({
-      id: item[0],
-      hotelName: `${(HotelRoomDetail.find(room => room.pid === item[1])).name}`, // Adjust as per your requirement
-      bookingDate: new Date(item[4]).toISOString().split('T')[0],
-      checkInDate: new Date(item[5]).toISOString().split('T')[0], // Format to YYYY-MM-DD
-      checkOutDate: new Date(item[6]).toISOString().split('T')[0], // Format to YYYY-MM-DD
-      guestCount: item[7], // Assuming guest count is at index 7
-      amount: `$${item[8]}`, // Assuming amount is at index 8
-      // Example details
-    }));
-  };
-
+  // Fetch bookings when the component mounts
   useEffect(() => {
-    // Fetch bookings data from API
-    axios.get('http://localhost:5000/bookings')
-      .then(response => {
-        setBookings(response.data);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('There was an error fetching the bookings!', error);
-        setLoading(false);
-      });
+    fetchBookings();
   }, []);
+
+  // Function to handle column header click
+  const handleSort = (column) => {
+    const newSortDirection = (sortColumn === column && sortDirection === 'asc') ? 'desc' : 'asc';
+    setSortColumn(column);
+    setSortDirection(newSortDirection);
+    
+    const sortedBookings = [...bookings].sort((a, b) => {
+      if (a[column] < b[column]) return newSortDirection === 'asc' ? -1 : 1;
+      if (a[column] > b[column]) return newSortDirection === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    setBookings(sortedBookings);
+  };
 
   if (loading) {
     return <div className='loading'>Loading...</div>;
   }
 
   return (
-    <div className="bookings-container">
-    <h1 className="bookings-header">Bookings</h1>
-    <table className="bookings-table">
-      <thead>
-        <tr>
-          <th className="bookings-th">Booking ID</th>
-          <th className="bookings-th">Room Number</th>
-          <th className="bookings-th">Guest Name</th>
-          <th className="bookings-th">Check-in Date</th>
-          <th className="bookings-th">Check-out Date</th>
-          <th className="bookings-th">Cancellation Prediction</th>
+    <div className="container mx auto p-4">
+      <h1 className="bookings-header">Bookings</h1>
+      <table className="bookings-table">
+        <thead>
+          <tr>
+            <th className="bookings-th" onClick={() => handleSort('sno')}>Sno</th>
+            <th className="bookings-th" onClick={() => handleSort('id')}>Booking ID</th>
+            <th className="bookings-th" onClick={() => handleSort('userId')}>User ID</th>
+            <th className="bookings-th" onClick={() => handleSort('roomCategory')}>Category</th>
+            <th className="bookings-th" onClick={() => handleSort('bookingDate')}>Booking Date</th>
+            <th className="bookings-th" onClick={() => handleSort('checkInDate')}>Check-in Date</th>
+            <th className="bookings-th" onClick={() => handleSort('checkOutDate')}>Check-out Date</th>
+            <th className="bookings-th" onClick={() => handleSort('guestCount')}>Guest Count</th>
+            <th className="bookings-th" onClick={() => handleSort('price')}>Price</th>
+            <th className="bookings-th" onClick={() => handleSort('status')}>Status</th>
+            <th className="bookings-th">Cancellation Prediction</th>
           </tr>
         </thead>
         <tbody>
-          {bookings.map(booking => (
+          {bookings.map((booking, index) => (
             <tr key={booking.id} className="bookings-tr">
-            <td className="bookings-td">{booking.id}</td>
-            <td className="bookings-td">{booking.roomNumber}</td>
-            <td className="bookings-td">{booking.guestName}</td>
-            <td className="bookings-td">{booking.checkInDate}</td>
-            <td className="bookings-td">{booking.checkOutDate}</td>
-            <td className="bookings-td"><CancellationPrediction booking={booking} /></td>
+              <td className="bookings-td">{index + 1}</td>
+              <td className="bookings-td">{booking.id}</td>
+              <td className="bookings-td">{booking.userId}</td>
+              <td className="bookings-td">{booking.roomCategory}</td>
+              <td className="bookings-td">{booking.bookingDate}</td>
+              <td className="bookings-td">{booking.checkInDate}</td>
+              <td className="bookings-td">{booking.checkOutDate}</td>
+              <td className="bookings-td">{booking.guestCount}</td>
+              <td className="bookings-td">{booking.price}</td>
+              <td className="bookings-td">{booking.status}</td>
+              <td className="bookings-td"></td> {/* Placeholder for Cancellation Prediction */}
             </tr>
           ))}
         </tbody>

@@ -230,7 +230,7 @@ function Dashboard() {
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx auto p-4">
       <div className="" style={{marginBottom:'10px'}}>
         <Button
           component={Link}
