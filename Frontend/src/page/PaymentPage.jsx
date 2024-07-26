@@ -13,6 +13,8 @@ const PaymentPage = () => {
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     const navigate = useNavigate();
 
+    
+
     const getNumberOfDays = (checkInDate, checkOutDate) => {
         const checkInTime = new Date(checkInDate).getTime();
         const checkOutTime = new Date(checkOutDate).getTime();
@@ -123,6 +125,7 @@ const PaymentPage = () => {
             .catch(error => {
                 console.error('Error booking:', error);
                 setError('Error booking rooms');
+                showLoginExpiredPopup();
             });
     }
 

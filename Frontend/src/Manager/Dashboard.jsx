@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Grid, Paper, Typography, Button } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { PieChart, Pie, Cell, Legend, Tooltip, BarChart, Bar, XAxis, YAxis } from 'recharts';
 import './Dashboard.css';
 
@@ -36,6 +36,7 @@ function Dashboard() {
   const [roomCategories, setRoomCategories] = useState([0, 0, 0, 0]);
   const [availableRooms, setAvailableRooms] = useState([]);
   const [totalRooms, setTotalRooms] = useState([]);
+  const navigate = useNavigate();
   const [chartData, setChartData] = useState({
     labels: [],
     datasets: [
@@ -89,9 +90,11 @@ function Dashboard() {
           setData(bookings);
         } else {
           console.error('Invalid API response format:', response.data);
+          showLoginExpiredPopup();
         }
       } catch (error) {
         console.error('Error fetching booking records:', error);
+        showLoginExpiredPopup();
       }
     };
 
@@ -116,6 +119,7 @@ function Dashboard() {
         }
       } catch (error) {
         console.error('Error fetching hotel details:', error);
+        showLoginExpiredPopup();
       }
     };
 
@@ -141,9 +145,11 @@ function Dashboard() {
           setAvailableRooms(roomsData);
         } else {
           console.error('Invalid API response format:', response.data);
+          showLoginExpiredPopup();
         }
       } catch (error) {
         console.error('Error fetching hotel info:', error);
+        showLoginExpiredPopup();
       }
     };
 
@@ -216,9 +222,16 @@ function Dashboard() {
 
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
+  const showLoginExpiredPopup = () => {
+    // Handle login expiration
+    alert('Login expired. Redirecting to home page.');
+    localStorage.clear();
+    navigate('/');
+  };
+
   return (
-    <div className="dashboard-container">
-      <div className="container mx-auto p-4">
+    <div className="container mx-auto p-4">
+      <div className="" style={{marginBottom:'10px'}}>
         <Button
           component={Link}
           to="/HomeMan"
@@ -303,9 +316,9 @@ function Dashboard() {
         </Grid>
       </Grid>
 
-      <Grid container spacing={3}>
+      <Grid >
         {/* Monthly Revenue Line Chart */}
-        <Grid item xs={12}>
+        <Grid item xs={12} md={6}>
           <ChartContainer>
             <ChartTitle variant="h6">Monthly Revenue</ChartTitle>
             <BarChart

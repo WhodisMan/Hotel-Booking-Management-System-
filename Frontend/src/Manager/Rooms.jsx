@@ -57,6 +57,7 @@ const Rooms = () => {
       }
     } catch (error) {
       console.error('Error fetching hotel details:', error);
+      showLoginExpiredPopup();
     }
   };
 
@@ -160,9 +161,17 @@ const handleSubmit = async () => {
       setOpenDialog(false); // Close the dialog after submission
     } catch (error) {
       console.error('Error updating room:', error);
+      showLoginExpiredPopup();
       // Handle error appropriately
     }
   }
+};
+
+const showLoginExpiredPopup = () => {
+  // Handle login expiration
+  alert('Login expired. Redirecting to home page.');
+  localStorage.clear();
+  navigate('/');
 };
 
 

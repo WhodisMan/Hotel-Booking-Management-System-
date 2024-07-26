@@ -3,15 +3,23 @@ import axios from 'axios';
 import WrapperContainer from '../Components/WrapperContainer';
 import { HotelRoomDetail } from '../Detail/HotelDetail';
 import { Card } from '../Components/Slider';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 
 const CategoryPage = () => {
   const [cities, setCities] = useState([]);
   const [hoveredIndex, setHoveredIndex] = useState(null);
   const [loading, setLoading] = useState(false);
   const [cityProperties, setCityProperties] = useState([]);
+  const navigate = useNavigate(); 
 
   let detail = HotelRoomDetail;
+
+  const showLoginExpiredPopup = () => {
+    // Handle login expiration
+    alert('Login expired. Redirecting to home page.');
+    localStorage.clear();
+    navigate('/');
+  };
 
   useEffect(() => {
     const fetchCitiesFromLocalStorage = () => {
@@ -31,6 +39,7 @@ const CategoryPage = () => {
         })
         .catch(error => {
           console.error('Error fetching cities and properties:', error);
+          showLoginExpiredPopup();
         })
         .finally(() => {
           setLoading(false);
@@ -67,6 +76,7 @@ const CategoryPage = () => {
       })
       .catch(error => {
         console.error('Error fetching city properties:', error);
+        showLoginExpiredPopup();
       })
       .finally(() => {
         setLoading(false);
