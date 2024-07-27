@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Grid, Paper, Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
+import { Typography, Button, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import axios from 'axios'; // Import axios
 import Loader from '../Components/Loader';
@@ -186,23 +186,19 @@ const Rooms = () => {
 
   return (
     <>
-      {loading ? (
-        <div>Loading...</div> // Show loading indicator while data is being fetched
-      ) : error ? (
-        <div>{error}</div> // Show error message if data fetching fails
-      ) : (
+      
         <>
           {/* Display hotel details */}
           <div className="container mx-auto p-4">
-            <Button
-              component={Link}
-              to="/HomeMan"
-              variant="outlined"
-              sx={{ borderColor: 'black', color: 'green' }}
-              style={{ marginBottom: '20px' }}
-            >
-              Back
-            </Button>
+          <Button
+        component={Link}
+        to="/HomeMan"
+        variant="outlined"
+        color="primary"
+        style={{ marginBottom: '20px' }}
+      >
+        Back
+      </Button>
             <div>
               {hotelDetails.map(detail => (
                 <RoundedBox key={detail.id}>
@@ -271,7 +267,7 @@ const Rooms = () => {
             )}
           </Dialog>
         </>
-      )}
+      
     </>
   );
 };

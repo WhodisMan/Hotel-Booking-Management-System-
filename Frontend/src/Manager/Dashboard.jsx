@@ -249,15 +249,15 @@ function Dashboard() {
     <div className='header'>
     <div className="container mx-auto p-4">
       <div className="" style={{ marginBottom: '25px' }}>
-        <Button
-          component={Link}
-          to="/HomeMan"
-          variant="outlined"
-          sx={{ borderColor: 'black', color: 'blue' }}
-          style={{ marginBottom: '20px' }}
-        >
-          Back
-        </Button>
+      <Button
+        component={Link}
+        to="/HomeMan"
+        variant="outlined"
+        color="primary"
+        style={{ marginBottom: '20px' }}
+      >
+        Back
+      </Button>
         <div className="">
           {hotelDetails && hotelDetails.length > 0 && hotelDetails.map(detail => (
             <RoundedBox key={detail[0]}> {/* Adjust the key based on your data structure */}
