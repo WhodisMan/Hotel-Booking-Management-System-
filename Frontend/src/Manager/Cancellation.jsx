@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import Loader from '../Components/Loader';
 
 function CancellationPrediction({ bookingId }) {
   const [prediction, setPrediction] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  
 
   const apiUrl = 'http://localhost:5000/predict';
   const accessToken = localStorage.getItem('token');
@@ -22,7 +20,7 @@ function CancellationPrediction({ bookingId }) {
           }
         });
 
-        if (response.data.res) {
+        if (response.data) {
           setPrediction(response.data.result);
         } else {
           setPrediction('No prediction available');
@@ -38,12 +36,7 @@ function CancellationPrediction({ bookingId }) {
     fetchPrediction();
   }, [bookingId, apiUrl, accessToken, PID]);
 
-
-  
-  if (loading) {
-    return <Loader />;
-  }
-  
+  if (loading) return <span>Loading...</span>;
   if (error) return <span>{error}</span>;
 
   return <span>{prediction}</span>;

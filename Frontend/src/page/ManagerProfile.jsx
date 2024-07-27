@@ -1,9 +1,48 @@
 import React, { useState } from 'react';
-
+import HeaderUser from '../Components/HeaderUser';
 import { Container, Typography, Button, Paper, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material'; // Import MUI components
 import './Profile.css'; // Import CSS file for additional styling
 
+const user = {
+  name: 'John Doe',
+  email: 'john.doe@example.com',
+  username: 'johndoe123',
+  addr: '123 Main Street, Cityville',
+};
 
+const bookings = [
+  {
+    id: 1,
+    hotelName: 'Example Hotel 1',
+    checkInDate: '2024-07-22',
+    checkOutDate: '2024-07-25',
+    guestCount: 2,
+    amount: '$500',
+    status: 'Confirmed',
+    details: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce feugiat congue tortor, sit amet maximus lacus consectetur vel.',
+  },
+  {
+    id: 2,
+    hotelName: 'Example Hotel 2',
+    checkInDate: '2024-08-05',
+    checkOutDate: '2024-08-08',
+    guestCount: 1,
+    amount: '$300',
+    status: 'Pending',
+    details: 'Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; In vitae sapien sed elit cursus scelerisque.',
+  },
+  {
+    id: 3,
+    hotelName: 'Example Hotel 3',
+    checkInDate: '2023-07-10',
+    checkOutDate: '2023-07-15',
+    guestCount: 3,
+    amount: '$700',
+    status: 'Confirmed',
+    details: 'Integer sollicitudin purus eu elit commodo, ut fermentum quam aliquet. Morbi convallis ante at nisi hendrerit ultricies.',
+  },
+  // Add more bookings as needed
+];
 
 const Profile = () => {
   const [expandedBookingId, setExpandedBookingId] = useState(null);
