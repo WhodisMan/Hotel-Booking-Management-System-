@@ -32,6 +32,7 @@ const HomeMan = () => {
   const navigate = useNavigate();
   const [pid, setPid] = useState(null);
   const [filteredRooms, setFilteredRooms] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem('token'); // Get token from localStorage
@@ -48,6 +49,7 @@ const HomeMan = () => {
         const receivedPid = response.data['logged_in_as'];
         setPid(receivedPid); // Set PID state
         localStorage.setItem('pid', receivedPid); // Store PID in localStorage
+        
       })
       .catch(error => console.error('Error fetching PID:', error));
     } else {
@@ -58,6 +60,8 @@ const HomeMan = () => {
     // Filtering hotel room details based on pid
     const filtered = HotelRoomDetail.filter(room => room.pid === parseInt(storedPid));
     setFilteredRooms(filtered);
+
+    setLoading(false);
     localStorage.setItem("HotelDetails",JSON.stringify(filtered));
   }, [pid]); // Add pid to the dependency array
 
@@ -67,6 +71,10 @@ const HomeMan = () => {
     localStorage.clear();
     navigate('/');
   };
+
+  if (loading) {
+    return <Loader />; // Show loader while data is being fetched
+  }
 
   return (
     <header>
