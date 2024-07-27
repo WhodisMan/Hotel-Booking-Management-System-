@@ -252,8 +252,8 @@ function Dashboard() {
         <Button
           component={Link}
           to="/HomeMan"
-          variant="contained"
-          color="primary"
+          variant="outlined"
+          sx={{ borderColor: 'black', color: 'blue' }}
           style={{ marginBottom: '20px' }}
         >
           Back

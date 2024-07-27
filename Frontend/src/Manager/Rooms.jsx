@@ -197,8 +197,8 @@ const Rooms = () => {
             <Button
               component={Link}
               to="/HomeMan"
-              variant="contained"
-              color="primary"
+              variant="outlined"
+              sx={{ borderColor: 'black', color: 'green' }}
               style={{ marginBottom: '20px' }}
             >
               Back
@@ -206,8 +206,8 @@ const Rooms = () => {
             <div>
               {hotelDetails.map(detail => (
                 <RoundedBox key={detail.id}>
-                  <Typography variant="h5 mt-8 text-3xl font-bold tracking-tight md:text-4xl lg:text-6xl d-flex justify-content-center align-items-center">{detail.name}</Typography>
-                  <Typography variant="h6 mt-8 text-3xl font-bold tracking-tight md:text-4xl lg:text-6xl d-flex justify-content-center align-items-center" style={{ marginBottom: '10px' }}><h1>{detail.description}</h1></Typography>
+                  <Typography variant="h5 mt-8 text-3xl font-bold tracking-tight md:text-4xl lg:text-6xl d-flex justify-content-center align-items-center"><h1>{detail.name}</h1></Typography>
+                  <Typography variant="h6 mt-8 text-3xl font-bold tracking-tight md:text-4xl lg:text-3xl d-flex justify-content-center align-items-center" style={{ marginBottom: '10px' }}>{detail.description}</Typography>
 
                 </RoundedBox>
               ))}
