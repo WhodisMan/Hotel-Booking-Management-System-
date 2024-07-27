@@ -95,12 +95,11 @@ function Booking() {
   }
 
   return (
-    <div className='bookings-container'>
     <div className="container mx auto p-4">
       <Button
         component={Link}
         to="/HomeMan"
-        variant="contained"
+        variant="outlined"
         color="primary"
         style={{ marginBottom: '20px' }}
       >
@@ -140,7 +139,7 @@ function Booking() {
             <th onClick={() => handleSort('status')} className={`bookings-th ${sortColumn === 'status' ? (sortDirection === 'asc' ? 'sorted-asc' : 'sorted-desc') : ''}`}>
               Status
             </th>
-            <th className="bookings-th">Cancellation Prediction</th>
+            <th className="bookings-th">Chances of Cancellation</th>
           </tr>
         </thead>
         <tbody>
@@ -163,7 +162,6 @@ function Booking() {
           ))}
         </tbody>
       </table>
-    </div>
     </div>
   );
 }

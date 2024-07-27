@@ -248,7 +248,7 @@ function Dashboard() {
   return (
     <div className='header'>
     <div className="container mx-auto p-4">
-      <div className="" style={{ marginBottom: '10px' }}>
+      <div className="" style={{ marginBottom: '25px' }}>
         <Button
           component={Link}
           to="/HomeMan"
@@ -270,7 +270,7 @@ function Dashboard() {
 
       <Grid container spacing={3}>
         <Grid item xs={12} md={6}>
-          <ChartContainer>
+          <ChartContainer >
             <ChartTitle variant="h6">
               Room Availability
             </ChartTitle>
@@ -335,7 +335,7 @@ function Dashboard() {
       <Grid>
         {/* Monthly Revenue Line Chart */}
         <Grid item xs={12} md={6}>
-          <ChartContainer>
+          <ChartContainer className="" style={{ marginTop: '25px' }}>
             <ChartTitle variant="h6">Monthly Revenue</ChartTitle>
             <BarChart
               width={800}

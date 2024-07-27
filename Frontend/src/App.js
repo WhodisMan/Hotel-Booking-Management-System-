@@ -13,7 +13,7 @@ import ManagerRegister from './page/ManagerRegister';
 import ManagerLogin from './page/ManagerLogin';
 import ErrorPage from './page/ErrorPage';
 import SingleHotelView from './page/SingleHotelView';
-import Profile from './page/profile';
+import Profile from './page/Profile';
 import PaymentPage from './page/PaymentPage';
 
 // Manager Pages
