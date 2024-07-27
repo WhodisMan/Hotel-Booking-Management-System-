@@ -3,7 +3,8 @@ import axios from 'axios';
 import WrapperContainer from '../Components/WrapperContainer';
 import { HotelRoomDetail } from '../Detail/HotelDetail';
 import { Card } from '../Components/Slider';
-import { Link,useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import Loader from '../Components/Loader'; // Import Loader component
 
 const CategoryPage = () => {
   const [cities, setCities] = useState([]);
@@ -107,7 +108,7 @@ const CategoryPage = () => {
         
         {loading && (
           <div className="flex justify-center mt-8">
-            <div className="loader"></div> {/* Replace with your loading animation component */}
+            <Loader /> {/* Use Loader component */}
           </div>
         )}
 

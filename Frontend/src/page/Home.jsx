@@ -1,19 +1,19 @@
-import React from 'react'
-import PackageDetail from '../Components/PackageDetail'
-import SliderCarousel from '../Components/SliderCarousel'
-import { HeroSection } from '../Components/HeroSection'
-import Header from "../Components/Header";
+import React, { useEffect } from 'react';
+import PackageDetail from '../Components/PackageDetail';
+import SliderCarousel from '../Components/SliderCarousel';
+import { HeroSection } from '../Components/HeroSection';
+
+
 
 const Home = () => {
+
   return (
     <>
-     <page>
-     <HeroSection />
-     <SliderCarousel />
-     <PackageDetail />
-     </page>
+      <HeroSection />
+      <SliderCarousel />
+      <PackageDetail />
     </>
-  )
+  );
 }
 
-export default Home
+export default Home;
