@@ -3,35 +3,20 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { HotelRoomDetail } from '../Detail/HotelDetail'; // Ensure this path is correct
+import Header from '../Components/Header';
 
 const ManagerRegister = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [pid, setPid] = useState(0); // Initialize pid as an integer
   const [email, setEmail] = useState('');
-  const [loading, setLoading] = useState(false); // Loading state
-  const [pidError, setPidError] = useState(''); // PID error state
   const navigate = useNavigate();
-
-  // Function to check if PID exists
-  const checkPidExists = (pid) => {
-    return HotelRoomDetail.some(hotel => hotel.pid === pid);
-  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    
-    // Check if the PID exists in the HotelDetail data
-    if (!checkPidExists(pid)) {
-      setPidError('Property ID does not exist.');
-      return;
-    }
-
-    setLoading(true); // Start loading
 
     axios
-      .post('http://127.0.0.1:5000/signup/mngr', { username, password, pid, email }) // Send pid as an integer
+      .post('http://localhost:5000/signup/mngr', { username, password, pid, email }) // Send pid as an integer
       .then((response) => {
         console.log(response);
         if (response.data.error) {
@@ -41,13 +26,10 @@ const ManagerRegister = () => {
           navigate('/login');
         } else {
           alert('Registered successfully! Please Login to proceed.');
-          navigate('/ManagerLogin');
+          navigate('/login');
         }
       })
-      .catch((err) => console.log(err))
-      .finally(() => {
-        setLoading(false); // End loading
-      });
+      .catch((err) => console.log(err));
   };
 
   return (
@@ -96,14 +78,9 @@ const ManagerRegister = () => {
                 placeholder="Enter Property ID"
                 className="form-control"
                 id="exampleInputPid1"
-                onChange={(event) => {
-                  const value = parseInt(event.target.value);
-                  setPid(value);
-                  setPidError(''); // Clear error when user changes the value
-                }}
+                onChange={(event) => setPid(parseInt(event.target.value))} // Parse input value to integer
                 required
               />
-              {pidError && <div className="text-danger mt-2">{pidError}</div>} {/* Display PID error */}
             </div>
             <div className="mb-3 text-start">
               <label htmlFor="exampleInputEmail1" className="form-label">
@@ -119,18 +96,10 @@ const ManagerRegister = () => {
               />
             </div>
 
-            <button type="submit" className="btn btn-primary" disabled={loading}>
-              {loading ? 'Registering...' : 'Register'}
+            <button type="submit" className="btn btn-primary">
+              Register
             </button>
           </form>
-
-          {loading && (
-            <div className="d-flex justify-content-center mt-3">
-              <div className="spinner-border" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </div>
-            </div>
-          )}
 
           <p className="container my-2">Already have an account?</p>
           <Link to="/ManagerLogin" className="btn btn-secondary">

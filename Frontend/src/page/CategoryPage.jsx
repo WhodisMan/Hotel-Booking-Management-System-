@@ -3,8 +3,7 @@ import axios from 'axios';
 import WrapperContainer from '../Components/WrapperContainer';
 import { HotelRoomDetail } from '../Detail/HotelDetail';
 import { Card } from '../Components/Slider';
-import { Link, useNavigate } from 'react-router-dom';
-import Loader from '../Components/Loader'; // Import Loader component
+import { Link,useNavigate } from 'react-router-dom';
 
 const CategoryPage = () => {
   const [cities, setCities] = useState([]);
@@ -32,7 +31,7 @@ const CategoryPage = () => {
 
     const fetchCitiesFromAPI = () => {
       setLoading(true);
-      axios.get('http://127.0.0.1:5000/home')
+      axios.get('http://localhost:5000/home')
         .then(response => {
           const { cities } = response.data;
           setCities(cities);
@@ -108,7 +107,7 @@ const CategoryPage = () => {
         
         {loading && (
           <div className="flex justify-center mt-8">
-            <Loader /> {/* Use Loader component */}
+            <div className="loader"></div> {/* Replace with your loading animation component */}
           </div>
         )}
 

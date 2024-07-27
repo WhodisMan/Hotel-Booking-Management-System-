@@ -1,23 +1,21 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-
+import Header from '../Components/Header';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const ManagerLogin = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false); // Add loading state
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setLoading(true); // Start loading
-
     const userData = { username, password };
 
     axios
-      .post('http://127.0.0.1:5000/login/mngr', userData) // Adjusted endpoint for manager login
+      .post('http://localhost:5000/login/mngr', userData) // Adjusted endpoint for manager login
       .then((response) => {
+        console.log(response);
         if (response.data.access_token) {
           localStorage.setItem('token', response.data.access_token);
           localStorage.setItem('UserType', 'manager'); // Set UserType as manager
@@ -28,10 +26,6 @@ const ManagerLogin = () => {
       })
       .catch((error) => {
         console.error('Error:', error);
-        alert('An error occurred. Please try again.'); // Notify user of error
-      })
-      .finally(() => {
-        setLoading(false); // End loading
       });
   };
 
@@ -73,17 +67,10 @@ const ManagerLogin = () => {
                 required
               />
             </div>
-            <button type="submit" className="btn btn-primary" disabled={loading}>
-              {loading ? 'Logging in...' : 'Login'}
+            <button type="submit" className="btn btn-primary">
+              Login
             </button>
           </form>
-          {loading && (
-            <div className="d-flex justify-content-center mt-3">
-              <div className="spinner-border" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </div>
-            </div>
-          )}
           <p className="container my-2">Don't have an account?</p>
           <Link to="/ManagerRegister" className="btn btn-secondary">
             Register

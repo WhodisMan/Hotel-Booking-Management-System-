@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import WrapperContainer from "../Components/WrapperContainer";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link ,useNavigate} from "react-router-dom";
 import { HotelRoomDetail } from "../Detail/HotelDetail";
 import { RoomDetail } from "../Detail/RoomDetail";
 import { ArrowBack } from "@mui/icons-material"; // Importing ArrowBack icon from Material UI
-import Loader from "../Components/Loader"; // Import Loader component
 
 const SingleHotelView = () => {
   const { id } = useParams();
@@ -17,8 +16,7 @@ const SingleHotelView = () => {
   const [error, setError] = useState("");
   const [roomData, setRoomData] = useState(null); // State to store room data
   const [selectedProperty, setSelectedProperty] = useState();
-  const [loading, setLoading] = useState(true); // Add loading state
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     // Function to fetch hotel detail and room data
@@ -47,36 +45,33 @@ const SingleHotelView = () => {
         if (cityProperties) {
           const selectedProperty = cityProperties.filter((property) => property[0] === hotelDetailData.pid);
           setSelectedProperty(selectedProperty);
-          localStorage.setItem('selectedProperty', JSON.stringify(selectedProperty));
+          localStorage.setItem('selectedProperty',selectedProperty);
+          
 
           // Update hotelDetailData with room type costs
           hotelDetailData.rt1_cost = selectedProperty[0][8];
           hotelDetailData.rt2_cost = selectedProperty[0][9];
           hotelDetailData.rt3_cost = selectedProperty[0][10];
           hotelDetailData.rt4_cost = selectedProperty[0][11];
+
+
         }
-        setLoading(false); // Set loading to false after data is fetched
       } catch (error) {
         console.error("Error fetching data:", error);
         setHotelDetail(null); // Handle error state if needed
-        setLoading(false); // Set loading to false on error
         showLoginExpiredPopup();
       }
     };
 
+    
+
     fetchData();
   }, [id]);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <Loader /> {/* Use Loader component */}
-      </div>
-    );
-  }
+  
 
   if (!hotelDetail || !roomData || !selectedProperty) {
-    return <div>Error loading data. Please try again later.</div>; // Handle case where data is not available
+    return null; // You can return a loading indicator or handle the loading state
   }
 
   const {
@@ -124,36 +119,36 @@ const SingleHotelView = () => {
       setError("Please fill in all fields.");
       return;
     }
-
+  
     // Convert dates to Date objects for comparison
     const today = new Date();
     const checkIn = new Date(checkInDate);
     const checkOut = new Date(checkOutDate);
-
+  
     // Set hours, minutes, seconds, and milliseconds of today's date to 0 for accurate comparison
     today.setHours(0, 0, 0, 0);
-
+  
     // Check if checkInDate is not before today's date
     if (checkIn.getTime() < today.getTime()) {
       setError("Check-in date must be today or a future date.");
       return;
     }
-
+  
     // Calculate number of days between checkIn and checkOut
     const timeDifference = checkOut.getTime() - checkIn.getTime();
     const numDays = timeDifference / (1000 * 3600 * 24);
-
+  
     // Check if number of days is greater than or equal to 1
     if (numDays < 1) {
       setError("Minimum stay duration is 1 day.");
       return;
     }
-
+  
     if (numGuests < 1) {
       setError("Number of guests must be greater than or equal to 1.");
       return;
     }
-
+  
     // Perform booking confirmation logic here
     console.log("Booking confirmed:", {
       roomType: selectedRoomType,
@@ -168,7 +163,7 @@ const SingleHotelView = () => {
       checkOutDate,
       numGuests,
     }));
-
+  
     closeModal();
     navigate('/PaymentPage');
   };
@@ -179,6 +174,8 @@ const SingleHotelView = () => {
     localStorage.clear();
     navigate('/');
   };
+  
+  
 
   return (
     <div>

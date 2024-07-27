@@ -51,11 +51,3 @@
   font-size: 1.2em;
   color: #666;
 }
-
-.header {
-  background: #0b8185; /* Updated color */
-  color: #020202;
-  padding: 20px 0;
-  border-bottom: 3px solid hsl(74, 73%, 70%);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
