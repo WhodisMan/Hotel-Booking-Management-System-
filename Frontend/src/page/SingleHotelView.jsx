@@ -47,7 +47,7 @@ const SingleHotelView = () => {
         if (cityProperties) {
           const selectedProperty = cityProperties.filter((property) => property[0] === hotelDetailData.pid);
           setSelectedProperty(selectedProperty);
-          localStorage.setItem('selectedProperty', JSON.stringify(selectedProperty));
+          localStorage.setItem('selectedProperty',selectedProperty);
 
           // Update hotelDetailData with room type costs
           hotelDetailData.rt1_cost = selectedProperty[0][8];
