@@ -12,9 +12,9 @@ const Login = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        const userData = { username, password };
         setLoading(true); // Start loading
 
-        const userData = { username, password };
         
         
         axios
