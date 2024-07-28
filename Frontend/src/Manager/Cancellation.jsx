@@ -22,7 +22,7 @@ function CancellationPrediction({ bookingId }) {
           }
         });
 
-        if (response.data.res) {
+        if (response.data) {
           setPrediction(response.data.result);
         } else {
           setPrediction('No prediction available');
