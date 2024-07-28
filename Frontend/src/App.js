@@ -89,49 +89,22 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/About" element={<About />} />
           <Route path="/SingleHotelView/:id" element={<SingleHotelView />} />
-          <Route 
-            path="/Login" 
-            element={<RedirectIfLoggedIn element={<Login />} />} 
-          />
-          <Route 
-            path="/Register" 
-            element={<RedirectIfLoggedIn element={<Register />} />} 
-          />
+          <Route path="/Login" element={<RedirectIfLoggedIn element={<Login />} />} />
+          <Route path="/Register" element={<RedirectIfLoggedIn element={<Register />} />} />
           <Route path="/ManagerRegister" element={<RedirectIfLoggedIn element={<ManagerRegister />}/>} />
           <Route path="/ManagerLogin" element={<RedirectIfLoggedIn element={<ManagerLogin />}/>} />
           <Route path="/ErrorPage" element={<ErrorPage />} />
 
           {/* Protected Routes for Users */}
-          <Route 
-            path="/CategoryPage" 
-            element={<ProtectedRoute element={<CategoryPage />} allowedUserTypes={['user']} userType={userType} />} 
-          />
-          <Route 
-            path="/Profile" 
-            element={<ProtectedRoute element={<Profile />} allowedUserTypes={['user']} userType={userType} />} 
-          />
-          <Route 
-            path="/PaymentPage" 
-            element={<ProtectedRoute element={<PaymentPage />} allowedUserTypes={['user']} userType={userType} />} 
-          />
+          <Route path="/CategoryPage" element={<ProtectedRoute element={<CategoryPage />} allowedUserTypes={['user']} userType={userType} />} />
+          <Route path="/Profile" element={<ProtectedRoute element={<Profile />} allowedUserTypes={['user']} userType={userType} />} />
+          <Route path="/PaymentPage" element={<ProtectedRoute element={<PaymentPage />} allowedUserTypes={['user']} userType={userType} />} />
 
           {/* Protected Routes for Managers */}
-          <Route 
-            path="/Dashboard" 
-            element={<ProtectedRoute element={<Dashboard />} allowedUserTypes={['manager']} userType={userType} />} 
-          />
-          <Route 
-            path="/Rooms" 
-            element={<ProtectedRoute element={<Rooms />} allowedUserTypes={['manager']} userType={userType} />} 
-          />
-          <Route 
-            path="/HomeMan" 
-            element={<ProtectedRoute element={<HomeMan />} allowedUserTypes={['manager']} userType={userType} />} 
-          />
-          <Route 
-            path="/Booking" 
-            element={<ProtectedRoute element={<Booking />} allowedUserTypes={['manager']} userType={userType} />} 
-          />
+          <Route path="/Dashboard" element={<ProtectedRoute element={<Dashboard />} allowedUserTypes={['manager']} userType={userType} />} />
+          <Route path="/Rooms" element={<ProtectedRoute element={<Rooms />} allowedUserTypes={['manager']} userType={userType} />} />
+          <Route path="/HomeMan" element={<ProtectedRoute element={<HomeMan />} allowedUserTypes={['manager']} userType={userType} />} />
+          <Route path="/Booking" element={<ProtectedRoute element={<Booking />} allowedUserTypes={['manager']} userType={userType} />} />
 
           {/* Catch-all Route */}
           <Route path="*" element={<ErrorPage />} />

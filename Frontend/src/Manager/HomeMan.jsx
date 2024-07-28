@@ -80,7 +80,7 @@ const HomeMan = () => {
     <header>
     <div className="container m-auto">
       <PageContainer>
-      <Typography variant="h3" gutterBottom style={{ color: 'white' }}>
+      <Typography variant="h2" gutterBottom style={{ color: 'white' }}>
         Welcome to ATLIQ
       </Typography>
         {/* Display filtered rooms */}
