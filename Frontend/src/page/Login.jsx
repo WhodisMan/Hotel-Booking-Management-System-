@@ -5,8 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const Login = () => {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [username, setUsername] = useState();
+    const [password, setPassword] = useState();
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
@@ -20,6 +20,7 @@ const Login = () => {
         axios
             .post('http://localhost:5000/login', userData)
             .then((response) => {
+                console.log(response.data)
                 if (response.data.access_token) {
                     localStorage.setItem('token', response.data.access_token);
                     localStorage.setItem('UserType', 'user');
@@ -51,7 +52,7 @@ const Login = () => {
                                 <strong>Username</strong>
                             </label>
                             <input 
-                                type="text" 
+                                type="Username" 
                                 placeholder="Enter Username"
                                 className="form-control" 
                                 id="exampleInputUsername1" 
