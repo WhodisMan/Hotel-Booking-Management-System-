@@ -213,6 +213,7 @@ const Rooms = () => {
           {/* Room Cards */}
           <div className="rooms-container">
           <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4">
+            
             {RoomDetail.map(room => (
               <RoomCard key={room.type} onClick={() => handleRoomClick(room)}>
                 <h2 className="rooms-title">{room.name}</h2>
